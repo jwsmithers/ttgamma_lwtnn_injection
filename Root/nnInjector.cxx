@@ -14,9 +14,9 @@ void m_nan_cleaner_upper(vector<float> *variable){
   }
 }
 
-void m_add_nn(string path, string channel, string filename){
+void m_add_nn(string path,string new_eos_path, string channel, string filename){
   string file = path+channel+"/"+filename;
-  string newpath = channel+"/"+filename;
+  string newpath = new_eos_path+ channel+"/"+filename;
   std::cout<<channel<<" "<< filename<< std::endl;
 
   std::shared_ptr<TFile> newfile(new TFile((newpath.c_str()), "update"));
@@ -191,34 +191,34 @@ int main()
   // path to ntuples from AnalysisTop
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   string channels[] ={"ejets"};
-  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected/";
+  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected/SR1/";
   // Define number of regions
 
 
   string samples[] = {
-  // "301XXX.eegamma.p2952.v007.001.root",
-   "301XXX.enugamma.p2952.v007.001.root"
-  // "301XXX.mumugamma.p2952.v007.001.root",
-  // "301XXX.munugamma.p2952.v007.001.root",
-  // "301XXX.taunugamma.p2952.v007.001.root",
-  // "301XXX.tautaugamma.p2952.v007.001.root",
-  // "3610XX.VV.p2952.v007.001.root",
-  // "3641XX.Wenu.p2952.v007.001.root",
-  // "3641XX.Wmunu.p2952.v007.001.root",
-  // "3641XX.Wtaunu.p2952.v007.001.root",
-  // "3641XX.Zee.p2952.v007.001.root",
-  // "3641XX.Zmumu.p2952.v007.001.root",
-  // "3641XX.Ztautau.p2952.v007.001.root",
-  //"410082.ttgamma_noallhad.p2952.v007.001.root",
-  // "4100XX.ST_others.p2952.v007.001.root",
-  // "4100XX.ST_Wt_inclusive.p2952.v007.001.root",
-  // "410501.ttbar_nonallhad_P8.p2952.v007.001.root",
-  // "data15periodD.p2950.v007.001.root",
-  // "data15periodE.p2950.v007.001.root",
-  // "data15periodF.p2950.v007.001.root",
-  // "data15periodG.p2950.v007.001.root",
-  // "data15periodH.p2950.v007.001.root",
-  // "data15periodJ.p2950.v007.001.root",
+   "301XXX.eegamma.p2952.v007.001.root",
+   "301XXX.enugamma.p2952.v007.001.root",
+   "301XXX.mumugamma.p2952.v007.001.root",
+   "301XXX.munugamma.p2952.v007.001.root"
+   //"301XXX.taunugamma.p2952.v007.001.root",
+   //"301XXX.tautaugamma.p2952.v007.001.root",
+   //"3610XX.VV.p2952.v007.001.root",
+   //"3641XX.Wenu.p2952.v007.001.root",
+   //"3641XX.Wmunu.p2952.v007.001.root",
+   //"3641XX.Wtaunu.p2952.v007.001.root",
+   //"3641XX.Zee.p2952.v007.001.root",
+   //"3641XX.Zmumu.p2952.v007.001.root",
+   //"3641XX.Ztautau.p2952.v007.001.root",
+   //"410082.ttgamma_noallhad.p2952.v007.001.root",
+   //"4100XX.ST_others.p2952.v007.001.root",
+   //"4100XX.ST_Wt_inclusive.p2952.v007.001.root",
+   //"410501.ttbar_nonallhad_P8.p2952.v007.001.root",
+   //"data15periodD.p2950.v007.001.root",
+   //"data15periodE.p2950.v007.001.root",
+   //"data15periodF.p2950.v007.001.root",
+   //"data15periodG.p2950.v007.001.root",
+   //"data15periodH.p2950.v007.001.root",
+   //"data15periodJ.p2950.v007.001.root"
   // "data16periodA.p2950.v007.001.root",
   // "data16periodB.p2950.v007.001.root",
   // "data16periodC.p2950.v007.001.root",
@@ -235,7 +235,7 @@ int main()
 
   for (const string &s : samples) {
     for(const string &c : channels){
-      m_add_nn(path,c,s);
+      m_add_nn(path,myPath,c,s);
     }
   }
 
