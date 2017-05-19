@@ -14,7 +14,7 @@ void m_nan_cleaner_upper(vector<float> *variable){
   }
 }
 
-void m_add_nn(string path,string new_eos_path, string channel, string filename){
+void m_add_branches(string path,string new_eos_path, string channel, string filename){
   string file = path+channel+"/"+filename;
   string newpath = new_eos_path+ channel+"/"+filename;
   std::cout<<channel<<" "<< filename<< std::endl;
@@ -66,10 +66,39 @@ void m_add_nn(string path,string new_eos_path, string channel, string filename){
      
     //m_nan_cleaner_upper(ph_HFT_MVA);
 
+    // Add some other branches that we train on // 
+    //////////////////////////////////////////////
+    newtree->Branch("jet_tagWeightBin_leading",&jet_tagWeightBin_leading);   
+    newtree->Branch("jet_tagWeightBin_subleading",&jet_tagWeightBin_subleading);   
+    newtree->Branch("jet_tagWeightBin_subsubleading",&jet_tagWeightBin_subsubleading);   
+    std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
+    for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
+      try {
+        jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+      try {
+      jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+     try {
+      jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+    }
+    //////////////////////////////////////////////
+
     if(jet_pt->size()==0) {continue;}
     if(ph_pt->size()==0) {continue;}
 
     //----------- Neural network
+    m_NeuralNet_input_values["jet_tagWeightBin_0"] = jet_tagWeightBin_leading;
+    m_NeuralNet_input_values["jet_tagWeightBin_1"] = jet_tagWeightBin_subleading;
+    m_NeuralNet_input_values["jet_tagWeightBin_2"] = jet_tagWeightBin_subsubleading;
+    
     for(uint jet = 0; jet < 6; jet++){
        
       jetpt = "jet_pt_"+std::to_string(jet);
@@ -160,6 +189,10 @@ void m_add_nn(string path,string new_eos_path, string channel, string filename){
     //    m_ph_PPT_MVA[pht] = out.second;
     //  }
     // }
+
+
+
+
     newtree->Fill();
 
     //////////////////////////////////////////////////////
@@ -182,7 +215,8 @@ int main()
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
   }
-  m_config_netFile = lwt::parse_json(in_file);
+
+  lwt::JSONConfig  m_config_netFile = lwt::parse_json(in_file);
   std::cout << "Neural Network has " << m_config_netFile.layers.size() << " layers";
   m_NeuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile.inputs, 
   m_config_netFile.layers, m_config_netFile.outputs);
@@ -191,34 +225,36 @@ int main()
   // path to ntuples from AnalysisTop
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   string channels[] ={"ejets"};
-  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected/SR1/";
+  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected_2/SR1/";
+  string myPath = "./";
+
   // Define number of regions
 
 
   string samples[] = {
-   "301XXX.eegamma.p2952.v007.001.root",
-   "301XXX.enugamma.p2952.v007.001.root",
-   "301XXX.mumugamma.p2952.v007.001.root",
-   "301XXX.munugamma.p2952.v007.001.root"
-   //"301XXX.taunugamma.p2952.v007.001.root",
-   //"301XXX.tautaugamma.p2952.v007.001.root",
-   //"3610XX.VV.p2952.v007.001.root",
-   //"3641XX.Wenu.p2952.v007.001.root",
-   //"3641XX.Wmunu.p2952.v007.001.root",
-   //"3641XX.Wtaunu.p2952.v007.001.root",
-   //"3641XX.Zee.p2952.v007.001.root",
-   //"3641XX.Zmumu.p2952.v007.001.root",
-   //"3641XX.Ztautau.p2952.v007.001.root",
-   //"410082.ttgamma_noallhad.p2952.v007.001.root",
-   //"4100XX.ST_others.p2952.v007.001.root",
-   //"4100XX.ST_Wt_inclusive.p2952.v007.001.root",
-   //"410501.ttbar_nonallhad_P8.p2952.v007.001.root",
-   //"data15periodD.p2950.v007.001.root",
-   //"data15periodE.p2950.v007.001.root",
-   //"data15periodF.p2950.v007.001.root",
-   //"data15periodG.p2950.v007.001.root",
-   //"data15periodH.p2950.v007.001.root",
-   //"data15periodJ.p2950.v007.001.root"
+   // "301XXX.eegamma.p2952.v007.001.root",
+   // "301XXX.enugamma.p2952.v007.001.root",
+   // "301XXX.mumugamma.p2952.v007.001.root",
+   // "301XXX.munugamma.p2952.v007.001.root",
+   "301XXX.taunugamma.p2952.v007.001.root"
+   // "301XXX.tautaugamma.p2952.v007.001.root",
+   // "3610XX.VV.p2952.v007.001.root",
+   // "3641XX.Wenu.p2952.v007.001.root",
+   // "3641XX.Wmunu.p2952.v007.001.root",
+   // "3641XX.Wtaunu.p2952.v007.001.root",
+   // "3641XX.Zee.p2952.v007.001.root",
+   // "3641XX.Zmumu.p2952.v007.001.root",
+   // "3641XX.Ztautau.p2952.v007.001.root",
+   // "410082.ttgamma_noallhad.p2952.v007.001.root",
+   // "4100XX.ST_others.p2952.v007.001.root"
+   // "4100XX.ST_Wt_inclusive.p2952.v007.001.root",
+   // "410501.ttbar_nonallhad_P8.p2952.v007.001.root",
+   // "data15periodD.p2950.v007.001.root",
+   // "data15periodE.p2950.v007.001.root",
+   // "data15periodF.p2950.v007.001.root",
+   // "data15periodG.p2950.v007.001.root",
+   // "data15periodH.p2950.v007.001.root",
+   // "data15periodJ.p2950.v007.001.root"
   // "data16periodA.p2950.v007.001.root",
   // "data16periodB.p2950.v007.001.root",
   // "data16periodC.p2950.v007.001.root",
@@ -235,7 +271,7 @@ int main()
 
   for (const string &s : samples) {
     for(const string &c : channels){
-      m_add_nn(path,myPath,c,s);
+      m_add_branches(path,myPath,c,s);
     }
   }
 
