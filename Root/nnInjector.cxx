@@ -1,5 +1,41 @@
 //////////////////////////////
 //Joshua.Wyatt.Smith@cern.ch//
+
+  // string samples[] = {
+  //  "301XXX.eegamma.p2952.v007.001.root",
+  //  "301XXX.enugamma.p2952.v007.001.root",
+  //  "301XXX.mumugamma.p2952.v007.001.root",
+  //  "301XXX.munugamma.p2952.v007.001.root",
+  //  "301XXX.taunugamma.p2952.v007.001.root",
+  //  "301XXX.tautaugamma.p2952.v007.001.root",
+  //  "3610XX.VV.p2952.v007.001.root",
+  //  "3641XX.Wenu.p2952.v007.001.root",
+  //  "3641XX.Wmunu.p2952.v007.001.root",
+  //  "3641XX.Wtaunu.p2952.v007.001.root",
+  //  "3641XX.Zee.p2952.v007.001.root",
+  //  "3641XX.Zmumu.p2952.v007.001.root",
+  //  "3641XX.Ztautau.p2952.v007.001.root",
+  //  "410082.ttgamma_noallhad.p2952.v007.001.root",
+  //  "4100XX.ST_others.p2952.v007.001.root",
+  //  "4100XX.ST_Wt_inclusive.p2952.v007.001.root",
+  //  "410501.ttbar_nonallhad_P8.p2952.v007.001.root",
+   // "data15periodD.p2950.v007.001.root",
+   // "data15periodE.p2950.v007.001.root",
+   // "data15periodF.p2950.v007.001.root",
+   // "data15periodG.p2950.v007.001.root",
+   // "data15periodH.p2950.v007.001.root",
+   // "data15periodJ.p2950.v007.001.root"
+  // "data16periodA.p2950.v007.001.root",
+  // "data16periodB.p2950.v007.001.root",
+  // "data16periodC.p2950.v007.001.root",
+  // "data16periodD.p2950.v007.001.root",
+  // "data16periodE.p2950.v007.001.root",
+  // "data16periodF.p2950.v007.001.root",
+  // "data16periodG.p2950.v007.001.root",
+  // "data16periodI.p2950.v007.001.root",
+  // "data16periodK.p2950.v007.001.root",
+  // "data16periodL.p2950.v007.001.root"
+  // };
 //////////////////////////////
 #include "nnInjector.h"
 #include <iostream>
@@ -38,10 +74,14 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   // newtree->Branch("ph_OtherPrompt_MVA",&m_ph_OtherPrompt_MVA,"m_ph_OtherPrompt_MVA/F");   
   //////////////////For Prompt photon tagger ////////////////////
     // newtree->Branch("ph_PPT_MVA",&m_ph_PPT_MVA);   
-  //////////////////////////////////////////////////////
   //////////////////For Prompt photon tagger ////////////////////
   newtree->Branch("event_ELT_MVA",&m_event_ELT_MVA);   
+  ////////////////// Branches sorted by btag weight ////////////////////
+  newtree->Branch("jet_tagWeightBin_leading",&jet_tagWeightBin_leading);   
+  newtree->Branch("jet_tagWeightBin_subleading",&jet_tagWeightBin_subleading);   
+  newtree->Branch("jet_tagWeightBin_subsubleading",&jet_tagWeightBin_subsubleading); 
   //////////////////////////////////////////////////////
+
   activateBranches(fChain);
 
   string jetpt;
@@ -56,6 +96,7 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   string phe;
   string phcaloeta;
   string phdrleadjet;
+  string phdrsubljet;
   string phdrlept;
   string phmgammalept;
   string phmgammaleptlept;
@@ -63,15 +104,14 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   for (int event = 0; event < nentries; event++) {
     fChain->GetEntry(event);
     loadBar(event, nentries, 100, 50);
-     
+    if(jet_pt->size()==0) {continue;}
+    if(ph_pt->size()==0) {continue;}
     //m_nan_cleaner_upper(ph_HFT_MVA);
 
-    // Add some other branches that we train on // 
-    //////////////////////////////////////////////
-    newtree->Branch("jet_tagWeightBin_leading",&jet_tagWeightBin_leading);   
-    newtree->Branch("jet_tagWeightBin_subleading",&jet_tagWeightBin_subleading);   
-    newtree->Branch("jet_tagWeightBin_subsubleading",&jet_tagWeightBin_subsubleading);   
+    // Sort btag weigths and add to branch // 
+    /////////////////////////////////////////
     std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
+
     for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
       try {
         jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
@@ -91,15 +131,12 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     }
     //////////////////////////////////////////////
 
-    if(jet_pt->size()==0) {continue;}
-    if(ph_pt->size()==0) {continue;}
-
     //----------- Neural network
     m_NeuralNet_input_values["jet_tagWeightBin_0"] = jet_tagWeightBin_leading;
     m_NeuralNet_input_values["jet_tagWeightBin_1"] = jet_tagWeightBin_subleading;
     m_NeuralNet_input_values["jet_tagWeightBin_2"] = jet_tagWeightBin_subsubleading;
     
-    for(uint jet = 0; jet < 6; jet++){
+    for(uint jet = 0; jet < 5; jet++){
        
       jetpt = "jet_pt_"+std::to_string(jet);
       jeteta = "jet_eta_"+std::to_string(jet);
@@ -133,7 +170,7 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
 
 
     // Photon variabes
-    for(uint photon = 0; photon < 3; photon++){
+    for(uint photon = 0; photon < 1; photon++){
       if(ph_pt->size()==0) {continue;}
       phHFTMVA = "ph_HFT_MVA_"+std::to_string(photon);
       phpt = "ph_pt_"+std::to_string(photon);
@@ -141,6 +178,8 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
       phe = "ph_e_"+std::to_string(photon);
       phcaloeta = "ph_caloEta_"+std::to_string(photon);
       phdrleadjet = "ph_drleadjet_"+std::to_string(photon);
+      phdrsubljet = "ph_drsubljet_"+std::to_string(photon);
+
       phdrlept = "ph_drlept_"+std::to_string(photon);
       phmgammalept = "ph_mgammalept_"+std::to_string(photon);
       phmgammaleptlept = "ph_mgammaleptlept_"+std::to_string(photon);
@@ -152,6 +191,8 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
         m_NeuralNet_input_values[phe] = ph_e->at(photon);
         m_NeuralNet_input_values[phcaloeta] = ph_caloEta->at(photon);
         m_NeuralNet_input_values[phdrleadjet] = ph_drleadjet->at(photon);
+        m_NeuralNet_input_values[phdrsubljet] = ph_drsubljet->at(photon);
+
         m_NeuralNet_input_values[phdrlept] = ph_drlept->at(photon);
         m_NeuralNet_input_values[phmgammalept] = ph_mgammalept->at(photon);
         m_NeuralNet_input_values[phmgammaleptlept] = ph_mgammaleptlept->at(photon);
@@ -163,15 +204,11 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
         m_NeuralNet_input_values[phe] = 0;
         m_NeuralNet_input_values[phcaloeta] = 0;
         m_NeuralNet_input_values[phdrleadjet] = 0;
+        m_NeuralNet_input_values[phdrsubljet] = 0;
         m_NeuralNet_input_values[phdrlept] = 0;
         m_NeuralNet_input_values[phmgammalept] = 0;
         m_NeuralNet_input_values[phmgammaleptlept] = 0;
       }
-    }
-
-    auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
-    for (const auto& out: out_vals) {
-      m_event_ELT_MVA = out.second;
     }
 
   //   for (UInt_t pht = 0; pht < ph_pt->size(); pht++) {
@@ -190,26 +227,25 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     //  }
     // }
 
-
-
-
+    // Fill the tree before calculating NN
     newtree->Fill();
-
-    //////////////////////////////////////////////////////
-
-
-  }
-
+    // Calculate lwtnn NN output
+    auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
+    for (const auto& out: out_vals) {
+      m_event_ELT_MVA = out.second;
+    }
+  }// end event loop
 
   newfile->cd();
   newtree->Write();
   newfile->Close();
 
-}
+}// end add_nn loop
 
-int main()
+int main(int argc, char** argv)
 {
 
+  std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
   std::string in_file_name("../json/lwtnn_EventLevel.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
@@ -217,61 +253,20 @@ int main()
   }
 
   lwt::JSONConfig  m_config_netFile = lwt::parse_json(in_file);
-  std::cout << "Neural Network has " << m_config_netFile.layers.size() << " layers";
+  std::cout << "Neural Network has " << m_config_netFile.layers.size() << " layers"<< std::endl;
   m_NeuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile.inputs, 
   m_config_netFile.layers, m_config_netFile.outputs);
 
 
   // path to ntuples from AnalysisTop
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
-  string channels[] ={"ejets"};
-  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected_2/SR1/";
+  string channels[] ={"mujets"};
+  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected_event_level_21_05_17/SR1/";
   string myPath = "./";
 
-  // Define number of regions
-
-
-  string samples[] = {
-   // "301XXX.eegamma.p2952.v007.001.root",
-   // "301XXX.enugamma.p2952.v007.001.root",
-   // "301XXX.mumugamma.p2952.v007.001.root",
-   // "301XXX.munugamma.p2952.v007.001.root",
-   "301XXX.taunugamma.p2952.v007.001.root"
-   // "301XXX.tautaugamma.p2952.v007.001.root",
-   // "3610XX.VV.p2952.v007.001.root",
-   // "3641XX.Wenu.p2952.v007.001.root",
-   // "3641XX.Wmunu.p2952.v007.001.root",
-   // "3641XX.Wtaunu.p2952.v007.001.root",
-   // "3641XX.Zee.p2952.v007.001.root",
-   // "3641XX.Zmumu.p2952.v007.001.root",
-   // "3641XX.Ztautau.p2952.v007.001.root",
-   // "410082.ttgamma_noallhad.p2952.v007.001.root",
-   // "4100XX.ST_others.p2952.v007.001.root"
-   // "4100XX.ST_Wt_inclusive.p2952.v007.001.root",
-   // "410501.ttbar_nonallhad_P8.p2952.v007.001.root",
-   // "data15periodD.p2950.v007.001.root",
-   // "data15periodE.p2950.v007.001.root",
-   // "data15periodF.p2950.v007.001.root",
-   // "data15periodG.p2950.v007.001.root",
-   // "data15periodH.p2950.v007.001.root",
-   // "data15periodJ.p2950.v007.001.root"
-  // "data16periodA.p2950.v007.001.root",
-  // "data16periodB.p2950.v007.001.root",
-  // "data16periodC.p2950.v007.001.root",
-  // "data16periodD.p2950.v007.001.root",
-  // "data16periodE.p2950.v007.001.root",
-  // "data16periodF.p2950.v007.001.root",
-  // "data16periodG.p2950.v007.001.root",
-  // "data16periodI.p2950.v007.001.root",
-  // "data16periodK.p2950.v007.001.root",
-  // "data16periodL.p2950.v007.001.root"
-  };
-
-
-
-  for (const string &s : samples) {
+  for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
-      m_add_branches(path,myPath,c,s);
+      m_add_branches(path,myPath,c,argv[i]);
     }
   }
 
