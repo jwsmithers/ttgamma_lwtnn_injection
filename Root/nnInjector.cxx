@@ -1,41 +1,5 @@
 //////////////////////////////
 //Joshua.Wyatt.Smith@cern.ch//
-
-  // string samples[] = {
-  //  "301XXX.eegamma.p2952.v007.001.root",
-  //  "301XXX.enugamma.p2952.v007.001.root",
-  //  "301XXX.mumugamma.p2952.v007.001.root",
-  //  "301XXX.munugamma.p2952.v007.001.root",
-  //  "301XXX.taunugamma.p2952.v007.001.root",
-  //  "301XXX.tautaugamma.p2952.v007.001.root",
-  //  "3610XX.VV.p2952.v007.001.root",
-  //  "3641XX.Wenu.p2952.v007.001.root",
-  //  "3641XX.Wmunu.p2952.v007.001.root",
-  //  "3641XX.Wtaunu.p2952.v007.001.root",
-  //  "3641XX.Zee.p2952.v007.001.root",
-  //  "3641XX.Zmumu.p2952.v007.001.root",
-  //  "3641XX.Ztautau.p2952.v007.001.root",
-  //  "410082.ttgamma_noallhad.p2952.v007.001.root",
-  //  "4100XX.ST_others.p2952.v007.001.root",
-  //  "4100XX.ST_Wt_inclusive.p2952.v007.001.root",
-  //  "410501.ttbar_nonallhad_P8.p2952.v007.001.root",
-   // "data15periodD.p2950.v007.001.root",
-   // "data15periodE.p2950.v007.001.root",
-   // "data15periodF.p2950.v007.001.root",
-   // "data15periodG.p2950.v007.001.root",
-   // "data15periodH.p2950.v007.001.root",
-   // "data15periodJ.p2950.v007.001.root"
-  // "data16periodA.p2950.v007.001.root",
-  // "data16periodB.p2950.v007.001.root",
-  // "data16periodC.p2950.v007.001.root",
-  // "data16periodD.p2950.v007.001.root",
-  // "data16periodE.p2950.v007.001.root",
-  // "data16periodF.p2950.v007.001.root",
-  // "data16periodG.p2950.v007.001.root",
-  // "data16periodI.p2950.v007.001.root",
-  // "data16periodK.p2950.v007.001.root",
-  // "data16periodL.p2950.v007.001.root"
-  // };
 //////////////////////////////
 #include "nnInjector.h"
 #include <iostream>
@@ -75,7 +39,7 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   //////////////////For Prompt photon tagger ////////////////////
     // newtree->Branch("ph_PPT_MVA",&m_ph_PPT_MVA);   
   //////////////////For Prompt photon tagger ////////////////////
-  newtree->Branch("event_ELT_MVA",&m_event_ELT_MVA);   
+  // newtree->Branch("event_ELT_MVA",&m_event_ELT_MVA);   
   ////////////////// Branches sorted by btag weight ////////////////////
   newtree->Branch("jet_tagWeightBin_leading",&jet_tagWeightBin_leading);   
   newtree->Branch("jet_tagWeightBin_subleading",&jet_tagWeightBin_subleading);   
@@ -136,80 +100,80 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     m_NeuralNet_input_values["jet_tagWeightBin_1"] = jet_tagWeightBin_subleading;
     m_NeuralNet_input_values["jet_tagWeightBin_2"] = jet_tagWeightBin_subsubleading;
     
-    for(uint jet = 0; jet < 5; jet++){
+    // for(uint jet = 0; jet < 5; jet++){
        
-      jetpt = "jet_pt_"+std::to_string(jet);
-      jeteta = "jet_eta_"+std::to_string(jet);
-      jetphi = "jet_phi_"+std::to_string(jet);
-      jetmv2c10 = "jet_mv2c10_"+std::to_string(jet);
-      jete = "jet_e_"+std::to_string(jet);
+    //   jetpt = "jet_pt_"+std::to_string(jet);
+    //   jeteta = "jet_eta_"+std::to_string(jet);
+    //   jetphi = "jet_phi_"+std::to_string(jet);
+    //   jetmv2c10 = "jet_mv2c10_"+std::to_string(jet);
+    //   jete = "jet_e_"+std::to_string(jet);
 
-      if(jet <= jet_pt->size()-1){
-        m_NeuralNet_input_values[jetpt] = jet_pt->at(jet);
-        m_NeuralNet_input_values[jeteta] = jet_eta->at(jet);
-        m_NeuralNet_input_values[jetphi] = jet_phi->at(jet);
-        m_NeuralNet_input_values[jetmv2c10] = jet_mv2c10->at(jet);
-        m_NeuralNet_input_values[jete] = jet_e->at(jet);
-      }
-     else{
-        m_NeuralNet_input_values[jetpt] = 0;
-        m_NeuralNet_input_values[jeteta] = 0;
-        m_NeuralNet_input_values[jetphi] = 0;
-        m_NeuralNet_input_values[jetmv2c10] = 0;
-        m_NeuralNet_input_values[jete] = 0;
-      }
-    }
-    m_NeuralNet_input_values["event_mwt"] = event_mwt;
-    m_NeuralNet_input_values["event_nbjets77"] = event_nbjets77;
-    m_NeuralNet_input_values["met_met"] = met_met;
-    m_NeuralNet_input_values["met_phi"] = met_phi;
-    m_NeuralNet_input_values["event_HT"] = event_HT;
-    m_NeuralNet_input_values["event_njets"] = event_njets;
-    m_NeuralNet_input_values["event_mll"] = event_mll;
+    //   if(jet <= jet_pt->size()-1){
+    //     m_NeuralNet_input_values[jetpt] = jet_pt->at(jet);
+    //     m_NeuralNet_input_values[jeteta] = jet_eta->at(jet);
+    //     m_NeuralNet_input_values[jetphi] = jet_phi->at(jet);
+    //     m_NeuralNet_input_values[jetmv2c10] = jet_mv2c10->at(jet);
+    //     m_NeuralNet_input_values[jete] = jet_e->at(jet);
+    //   }
+    //  else{
+    //     m_NeuralNet_input_values[jetpt] = 0;
+    //     m_NeuralNet_input_values[jeteta] = 0;
+    //     m_NeuralNet_input_values[jetphi] = 0;
+    //     m_NeuralNet_input_values[jetmv2c10] = 0;
+    //     m_NeuralNet_input_values[jete] = 0;
+    //   }
+    // }
+    // m_NeuralNet_input_values["event_mwt"] = event_mwt;
+    // m_NeuralNet_input_values["event_nbjets77"] = event_nbjets77;
+    // m_NeuralNet_input_values["met_met"] = met_met;
+    // m_NeuralNet_input_values["met_phi"] = met_phi;
+    // m_NeuralNet_input_values["event_HT"] = event_HT;
+    // m_NeuralNet_input_values["event_njets"] = event_njets;
+    // m_NeuralNet_input_values["event_mll"] = event_mll;
 
 
 
-    // Photon variabes
-    for(uint photon = 0; photon < 1; photon++){
-      if(ph_pt->size()==0) {continue;}
-      phHFTMVA = "ph_HFT_MVA_"+std::to_string(photon);
-      phpt = "ph_pt_"+std::to_string(photon);
-      phphi = "ph_phi_"+std::to_string(photon);
-      phe = "ph_e_"+std::to_string(photon);
-      phcaloeta = "ph_caloEta_"+std::to_string(photon);
-      phdrleadjet = "ph_drleadjet_"+std::to_string(photon);
-      phdrsubljet = "ph_drsubljet_"+std::to_string(photon);
+    // // Photon variabes
+    // for(uint photon = 0; photon < 1; photon++){
+    //   if(ph_pt->size()==0) {continue;}
+    //   phHFTMVA = "ph_HFT_MVA_"+std::to_string(photon);
+    //   phpt = "ph_pt_"+std::to_string(photon);
+    //   phphi = "ph_phi_"+std::to_string(photon);
+    //   phe = "ph_e_"+std::to_string(photon);
+    //   phcaloeta = "ph_caloEta_"+std::to_string(photon);
+    //   phdrleadjet = "ph_drleadjet_"+std::to_string(photon);
+    //   phdrsubljet = "ph_drsubljet_"+std::to_string(photon);
 
-      phdrlept = "ph_drlept_"+std::to_string(photon);
-      phmgammalept = "ph_mgammalept_"+std::to_string(photon);
-      phmgammaleptlept = "ph_mgammaleptlept_"+std::to_string(photon);
+    //   phdrlept = "ph_drlept_"+std::to_string(photon);
+    //   phmgammalept = "ph_mgammalept_"+std::to_string(photon);
+    //   phmgammaleptlept = "ph_mgammaleptlept_"+std::to_string(photon);
 
-      if(photon <= ph_pt->size()-1) {
-        m_NeuralNet_input_values[phHFTMVA] = ph_HFT_MVA->at(photon);
-        m_NeuralNet_input_values[phpt] = ph_pt->at(photon);
-        m_NeuralNet_input_values[phphi] = ph_phi->at(photon);
-        m_NeuralNet_input_values[phe] = ph_e->at(photon);
-        m_NeuralNet_input_values[phcaloeta] = ph_caloEta->at(photon);
-        m_NeuralNet_input_values[phdrleadjet] = ph_drleadjet->at(photon);
-        m_NeuralNet_input_values[phdrsubljet] = ph_drsubljet->at(photon);
+    //   if(photon <= ph_pt->size()-1) {
+    //     m_NeuralNet_input_values[phHFTMVA] = ph_HFT_MVA->at(photon);
+    //     m_NeuralNet_input_values[phpt] = ph_pt->at(photon);
+    //     m_NeuralNet_input_values[phphi] = ph_phi->at(photon);
+    //     m_NeuralNet_input_values[phe] = ph_e->at(photon);
+    //     m_NeuralNet_input_values[phcaloeta] = ph_caloEta->at(photon);
+    //     m_NeuralNet_input_values[phdrleadjet] = ph_drleadjet->at(photon);
+    //     m_NeuralNet_input_values[phdrsubljet] = ph_drsubljet->at(photon);
 
-        m_NeuralNet_input_values[phdrlept] = ph_drlept->at(photon);
-        m_NeuralNet_input_values[phmgammalept] = ph_mgammalept->at(photon);
-        m_NeuralNet_input_values[phmgammaleptlept] = ph_mgammaleptlept->at(photon);
-      }
-     else{
-        m_NeuralNet_input_values[phHFTMVA] = 0;
-        m_NeuralNet_input_values[phpt] = 0;
-        m_NeuralNet_input_values[phphi] = 0;
-        m_NeuralNet_input_values[phe] = 0;
-        m_NeuralNet_input_values[phcaloeta] = 0;
-        m_NeuralNet_input_values[phdrleadjet] = 0;
-        m_NeuralNet_input_values[phdrsubljet] = 0;
-        m_NeuralNet_input_values[phdrlept] = 0;
-        m_NeuralNet_input_values[phmgammalept] = 0;
-        m_NeuralNet_input_values[phmgammaleptlept] = 0;
-      }
-    }
+    //     m_NeuralNet_input_values[phdrlept] = ph_drlept->at(photon);
+    //     m_NeuralNet_input_values[phmgammalept] = ph_mgammalept->at(photon);
+    //     m_NeuralNet_input_values[phmgammaleptlept] = ph_mgammaleptlept->at(photon);
+    //   }
+    //  else{
+    //     m_NeuralNet_input_values[phHFTMVA] = 0;
+    //     m_NeuralNet_input_values[phpt] = 0;
+    //     m_NeuralNet_input_values[phphi] = 0;
+    //     m_NeuralNet_input_values[phe] = 0;
+    //     m_NeuralNet_input_values[phcaloeta] = 0;
+    //     m_NeuralNet_input_values[phdrleadjet] = 0;
+    //     m_NeuralNet_input_values[phdrsubljet] = 0;
+    //     m_NeuralNet_input_values[phdrlept] = 0;
+    //     m_NeuralNet_input_values[phmgammalept] = 0;
+    //     m_NeuralNet_input_values[phmgammaleptlept] = 0;
+    //   }
+    // }
 
   //   for (UInt_t pht = 0; pht < ph_pt->size(); pht++) {
     //  m_ph_PPT_MVA[pht]=-99;
@@ -230,10 +194,10 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     // Fill the tree before calculating NN
     newtree->Fill();
     // Calculate lwtnn NN output
-    auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
-    for (const auto& out: out_vals) {
-      m_event_ELT_MVA = out.second;
-    }
+    // auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
+    // for (const auto& out: out_vals) {
+    //   m_event_ELT_MVA = out.second;
+    // }
   }// end event loop
 
   newfile->cd();
@@ -260,9 +224,9 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
-  string channels[] ={"mujets"};
-  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/nnInjected_event_level_21_05_17/SR1/";
-  string myPath = "./";
+  string channels[] ={"ejets","mujets","ee","mumu","emu"};
+  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/CR1/";
+  // string myPath = "./";
 
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
