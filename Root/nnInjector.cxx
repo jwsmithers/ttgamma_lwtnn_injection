@@ -22,12 +22,21 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   std::shared_ptr<TFile> newfile(new TFile((newpath.c_str()), "update"));
   // TFile *newfile;
   TTree *newtree=nullptr;
-  TChain *fChain = new TChain("nominal");
+
+  if (filename.find("QCDfakes") != std::string::npos) {
+    TChain *fChain = new TChain("nominal_Loose");
+  }
+  else {
+    TChain *fChain = new TChain("nominal");
+  }
+
 
   fChain->Add((file).c_str());
 
   int nentries = fChain->GetEntries();
   newtree = fChain->CloneTree(0);
+  newtree->SetName("nominal");
+
 
   // Define some new branches and activate all others //
  //  ///////////////////// For multiclass ////////////////////////
@@ -208,7 +217,7 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
 
 int main(int argc, char** argv)
 {
-
+  gROOT->ProcessLine( "gErrorIgnoreLevel = kError;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
   std::string in_file_name("../json/lwtnn_EventLevel.json");
   std::ifstream in_file(in_file_name);
@@ -223,9 +232,11 @@ int main(int argc, char** argv)
 
 
   // path to ntuples from AnalysisTop
-  string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
-  string channels[] ={"ejets","mujets","ee","mumu","emu"};
-  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/CR1/";
+  // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
+  string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
+  string channels[] ={"ejets","mujets"};
+  // string channels[] ={"ejets","mujets","emu","mumu","emu"};
+  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/QE2/";
   // string myPath = "./";
 
   for (int i = 1; i < argc; ++i) {
