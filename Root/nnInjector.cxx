@@ -205,7 +205,7 @@ int main(int argc, char** argv)
 {
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/lwtnn_EventLevel.json");
+  std::string in_file_name("../json/lwtnn_EventLevel_BN_D_DR_BN_D_DR_D_D.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
