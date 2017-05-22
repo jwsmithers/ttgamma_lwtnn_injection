@@ -15,6 +15,7 @@ find_package(ROOT REQUIRED COMPONENTS MathCore RIO Hist Tree Net Core Matrix Phy
 include(${ROOT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 add_definitions(${ROOT_CXX_FLAGS})
+#set (CMAKE_CXX_FLAGS " -g -O0 -v -da -Q")
 
 ROOT_GENERATE_DICTIONARY(G__nnInjector nnInjector.h LINKDEF LinkDef.h)
 #---Create a shared library with geneated dictionary
