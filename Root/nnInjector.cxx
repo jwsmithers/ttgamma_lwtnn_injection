@@ -14,29 +14,12 @@ void m_nan_cleaner_upper(vector<float> *variable){
   }
 }
 
-void m_add_branches(string path,string new_eos_path, string channel, string filename){
-  string file = path+channel+"/"+filename;
-  string newpath = new_eos_path+ channel+"/"+filename;
-  std::cout<<channel<<" "<< filename<< std::endl;
-
-  std::shared_ptr<TFile> newfile(new TFile((newpath.c_str()), "update"));
-  // TFile *newfile;
-  // TTree *newtree=nullptr;
-  // TChain *fChain=nullptr;
-  if (filename.find("QCDfakes") != std::string::npos) {
-    fChain = new TChain("nominal_Loose");
-  }
-  else {
-    fChain = new TChain("nominal");
-  }
-
-
-  fChain->Add((file).c_str());
+void m_add_branches(
+  TChain *fChain, 
+  TTree *newtree,
+  lwt::LightweightNeuralNetwork *neuralNet){
 
   int nentries = fChain->GetEntries();
-  newtree = fChain->CloneTree(0);
-  newtree->SetName("nominal");
-
 
   // Define some new branches and activate all others //
  //  ///////////////////// For multiclass ////////////////////////
@@ -50,9 +33,9 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   //////////////////For Prompt photon tagger ////////////////////
   newtree->Branch("event_ELT_MVA",&m_event_ELT_MVA);   
   ////////////////// Branches sorted by btag weight ////////////////////
-  // newtree->Branch("jet_tagWeightBin_leading",&jet_tagWeightBin_leading);   
-  // newtree->Branch("jet_tagWeightBin_subleading",&jet_tagWeightBin_subleading);   
-  // newtree->Branch("jet_tagWeightBin_subsubleading",&jet_tagWeightBin_subsubleading); 
+  // newtree->Branch("jet_tagWeightBin_leading_temp",&jet_tagWeightBin_leading_temp);   
+  // newtree->Branch("jet_tagWeightBin_subleading_temp",&jet_tagWeightBin_subleading_temp);   
+  // newtree->Branch("jet_tagWeightBin_subsubleading_temp",&jet_tagWeightBin_subsubleading_temp); 
   //////////////////////////////////////////////////////
 
   activateBranches(fChain);
@@ -105,6 +88,10 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     ////////////////////////////////////////////
 
     //----------- Neural network
+    // m_NeuralNet_input_values["jet_tagWeightBin_leading"] = jet_tagWeightBin_leading_temp;
+    // m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = jet_tagWeightBin_subleading_temp;
+    // m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = jet_tagWeightBin_subsubleading_temp;
+
     m_NeuralNet_input_values["jet_tagWeightBin_leading"] = jet_tagWeightBin_leading;
     m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = jet_tagWeightBin_subleading;
     m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = jet_tagWeightBin_subsubleading;
@@ -201,17 +188,17 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
     // }
 
     // Fill the tree before calculating NN
-    newtree->Fill();
     // Calculate lwtnn NN output
-    auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
+    auto out_vals = neuralNet->compute(m_NeuralNet_input_values);
     for (const auto& out: out_vals) {
       m_event_ELT_MVA = out.second;
     }
+
+    newtree->Fill();
+
   }// end event loop
 
-  newfile->cd();
-  newtree->Write();
-  newfile->Close();
+
 }// end add_nn loop
 
 int main(int argc, char** argv)
@@ -224,27 +211,57 @@ int main(int argc, char** argv)
     std::cout<<"Error: no nn input file!"<< std::endl;
   }
 
-  lwt::JSONConfig  m_config_netFile = lwt::parse_json(in_file);
-  std::cout << "Neural Network has " << m_config_netFile.layers.size() << " layers"<< std::endl;
-  m_NeuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile.inputs, 
-  m_config_netFile.layers, m_config_netFile.outputs);
 
 
   // path to ntuples from AnalysisTop
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // Where we read from:
-  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/SR1/";
+  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/CR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
   // string channels[] ={"ejets","mujets","emu","mumu","ee"};
   string channels[] ={"ejets"};
   // Where we save to:
-  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT/SR1/";
-  string myPath = "./SR1/";
+  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT_no_QCD/CR1/";
+  // string myPath = "./SR1/";
+
+
+  TTree *newtree;
+  TChain *fChain;
+  TFile *newfile;
+  lwt::LightweightNeuralNetwork *neuralNet;
+  lwt::JSONConfig  config_netFile = lwt::parse_json(in_file);
+  std::cout << "Neural Network has " << config_netFile.layers.size() << " layers"<< std::endl;
 
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
-      m_add_branches(path,myPath,c,argv[i]);
+
+
+      neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
+      config_netFile.layers, config_netFile.outputs);
+
+
+      string filename = argv[i];
+      string file = path+c+"/"+filename;
+      string newpath = myPath + c+"/"+filename;
+      std::cout<<c<<": "<< filename<< std::endl;
+
+      newfile = new TFile((newpath.c_str()), "update");
+
+      if (filename.find("QCDfakes") != std::string::npos) {
+        fChain = new TChain("nominal_Loose");
+      }
+      else {
+        fChain = new TChain("nominal");
+      }
+ 
+      fChain->Add((file).c_str());
+      newtree = fChain->CloneTree(0);
+      newtree->SetName("nominal");
+      m_add_branches(fChain,newtree,neuralNet);
+      newfile->cd();
+      newtree->Write();
+      newfile->Close();
     }
   }
 

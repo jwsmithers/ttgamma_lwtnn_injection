@@ -45,12 +45,8 @@ using namespace std;
 ////////For PPT /////////////
 float m_event_ELT_MVA;
 /////////////////////////////////////////////
-lwt::JSONConfig m_config_netFile;
 std::map<std::string,double> m_NeuralNet_input_values;
-lwt::LightweightNeuralNetwork *m_NeuralNet=nullptr;
 /////////////////////////////////////////////
-TTree *newtree=nullptr;
-TChain *fChain=nullptr;
 
 
 Float_t         weight_mc;
@@ -122,6 +118,9 @@ vector<int>     *jet_tagWeightBin= nullptr;
 float           jet_tagWeightBin_leading;
 float           jet_tagWeightBin_subleading;
 float           jet_tagWeightBin_subsubleading;
+// float           jet_tagWeightBin_leading_temp;
+// float           jet_tagWeightBin_subleading_temp;
+// float           jet_tagWeightBin_subsubleading_temp;
 Float_t         met_met;
 Float_t         met_phi;
 Int_t           ejets_2015;
