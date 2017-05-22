@@ -47,8 +47,10 @@ float m_event_ELT_MVA;
 /////////////////////////////////////////////
 lwt::JSONConfig m_config_netFile;
 std::map<std::string,double> m_NeuralNet_input_values;
-lwt::LightweightNeuralNetwork *m_NeuralNet;
+lwt::LightweightNeuralNetwork *m_NeuralNet=nullptr;
 /////////////////////////////////////////////
+TTree *newtree=nullptr;
+TChain *fChain=nullptr;
 
 
 Float_t         weight_mc;
@@ -337,6 +339,9 @@ void activateBranches(TChain *chain){
 	SETBRANCH(jet_isbtagged_85);
 	SETBRANCH(jet_isbtagged_70);
 	SETBRANCH(jet_tagWeightBin);
+	SETBRANCH(jet_tagWeightBin_leading);
+	SETBRANCH(jet_tagWeightBin_subleading);
+	SETBRANCH(jet_tagWeightBin_subsubleading);
 	SETBRANCH(met_met);
 	SETBRANCH(met_phi);
 	SETBRANCH(ejets_2015);

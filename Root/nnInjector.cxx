@@ -21,8 +21,8 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
 
   std::shared_ptr<TFile> newfile(new TFile((newpath.c_str()), "update"));
   // TFile *newfile;
-  TTree *newtree=nullptr;
-  TChain *fChain=nullptr;
+  // TTree *newtree=nullptr;
+  // TChain *fChain=nullptr;
   if (filename.find("QCDfakes") != std::string::npos) {
     fChain = new TChain("nominal_Loose");
   }
@@ -77,38 +77,38 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   for (int event = 0; event < nentries; event++) {
     fChain->GetEntry(event);
     loadBar(event, nentries, 100, 50);
-    if(jet_pt->size()==0) {continue;}
-    if(ph_pt->size()==0) {continue;}
+    // if(jet_pt->size()==0) {continue;}
+    // if(ph_pt->size()==0) {continue;}
     //m_nan_cleaner_upper(ph_HFT_MVA);
 
-    // Sort btag weigths and add to branch // 
-    /////////////////////////////////////////
+    // Sort btag weigths and add to mbranch // 
+    ///////////////////////////////////////
     // std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
 
     // for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
     //   try {
-    //     jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
+    //     jet_tagWeightBin_leading_temp = jet_tagWeightBin->at(0);
     //   } catch(const std::out_of_range& oor) {
     //     continue;
     //   }
     //   try {
-    //   jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
+    //   jet_tagWeightBin_subleading_temp = jet_tagWeightBin->at(1);
     //   } catch(const std::out_of_range& oor) {
     //     continue;
     //   }
     //  try {
-    //   jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
+    //   jet_tagWeightBin_subsubleading_temp = jet_tagWeightBin->at(2);
     //   } catch(const std::out_of_range& oor) {
     //     continue;
     //   }
     // }
-    //////////////////////////////////////////////
+    ////////////////////////////////////////////
 
     //----------- Neural network
-    m_NeuralNet_input_values["jet_tagWeightBin_0"] = jet_tagWeightBin_leading;
-    m_NeuralNet_input_values["jet_tagWeightBin_1"] = jet_tagWeightBin_subleading;
-    m_NeuralNet_input_values["jet_tagWeightBin_2"] = jet_tagWeightBin_subsubleading;
-    
+    m_NeuralNet_input_values["jet_tagWeightBin_leading"] = jet_tagWeightBin_leading;
+    m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = jet_tagWeightBin_subleading;
+    m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = jet_tagWeightBin_subsubleading;
+
     for(uint jet = 0; jet < 5; jet++){
        
       jetpt = "jet_pt_"+std::to_string(jet);
@@ -212,12 +212,11 @@ void m_add_branches(string path,string new_eos_path, string channel, string file
   newfile->cd();
   newtree->Write();
   newfile->Close();
-
 }// end add_nn loop
 
 int main(int argc, char** argv)
 {
-  gROOT->ProcessLine( "gErrorIgnoreLevel = kError;");
+  gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
   std::string in_file_name("../json/lwtnn_EventLevel.json");
   std::ifstream in_file(in_file_name);
@@ -234,19 +233,20 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
+  // Where we read from:
   string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/SR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
+  // string channels[] ={"ejets","mujets","emu","mumu","ee"};
   string channels[] ={"ejets"};
-  // string channels[] ={"ejets","mujets","emu","mumu","emu"};
-  string myPath = "./";
-  // string myPath = "./";
+  // Where we save to:
+  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT/SR1/";
+  string myPath = "./SR1/";
 
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
       m_add_branches(path,myPath,c,argv[i]);
     }
   }
-
 
   return 0;
 }
