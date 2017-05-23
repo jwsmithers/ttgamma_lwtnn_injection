@@ -45,10 +45,14 @@ using namespace std;
 ////////For PPT /////////////
 float m_event_ELT_MVA;
 /////////////////////////////////////////////
+lwt::JSONConfig m_config_netFile;
 std::map<std::string,double> m_NeuralNet_input_values;
+lwt::LightweightNeuralNetwork *m_NeuralNet;
 /////////////////////////////////////////////
 
 
+Float_t         weight_mm_ejets;
+Float_t         weight_mm_mujets;
 Float_t         weight_mc;
 Float_t         weight_pileup;
 Float_t         weight_leptonSF;
@@ -118,9 +122,6 @@ vector<int>     *jet_tagWeightBin= nullptr;
 float           jet_tagWeightBin_leading;
 float           jet_tagWeightBin_subleading;
 float           jet_tagWeightBin_subsubleading;
-// float           jet_tagWeightBin_leading_temp;
-// float           jet_tagWeightBin_subleading_temp;
-// float           jet_tagWeightBin_subsubleading_temp;
 Float_t         met_met;
 Float_t         met_phi;
 Int_t           ejets_2015;
@@ -272,6 +273,8 @@ float other_MVA = -1;
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
+	SETBRANCH(weight_mm_ejets);
+	SETBRANCH(weight_mm_mujets);
 	SETBRANCH(weight_mc);
 	SETBRANCH(weight_pileup);
 	SETBRANCH(weight_leptonSF);
@@ -338,9 +341,6 @@ void activateBranches(TChain *chain){
 	SETBRANCH(jet_isbtagged_85);
 	SETBRANCH(jet_isbtagged_70);
 	SETBRANCH(jet_tagWeightBin);
-	SETBRANCH(jet_tagWeightBin_leading);
-	SETBRANCH(jet_tagWeightBin_subleading);
-	SETBRANCH(jet_tagWeightBin_subsubleading);
 	SETBRANCH(met_met);
 	SETBRANCH(met_phi);
 	SETBRANCH(ejets_2015);
