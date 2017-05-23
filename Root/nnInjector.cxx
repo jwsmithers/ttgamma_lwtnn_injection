@@ -21,6 +21,8 @@ void m_add_branches(
 
   int nentries = fChain->GetEntries();
 
+  std::cout<< nentries << " entries" << std::endl;
+
   // Define some new branches and activate all others //
  //  ///////////////////// For multiclass ////////////////////////
   // newtree->Branch("ph_ISR_MVA",&m_ph_ISR_MVA,"m_ph_ISR_MVA/F");
@@ -58,6 +60,7 @@ void m_add_branches(
   string phmgammaleptlept;
 
   for (int event = 0; event < nentries; event++) {
+
     fChain->GetEntry(event);
     loadBar(event, nentries, 100, 50);
     // if(jet_pt->size()==0) {continue;}
@@ -205,7 +208,7 @@ int main(int argc, char** argv)
 {
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/lwtnn_EventLevel_BN_D_DR_BN_D_DR_D_D.json");
+  std::string in_file_name("../json/lwtnn_EventLevel_withQCD.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
@@ -217,13 +220,13 @@ int main(int argc, char** argv)
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // Where we read from:
-  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/CR1/";
+  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/QE2/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  // string channels[] ={"ejets","mujets","emu","mumu","ee"};
-  string channels[] ={"ejets"};
+  string channels[] ={"ejets","mujets"};
+  // string channels[] ={"mumu"};
   // Where we save to:
-  // string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT_no_QCD/CR1/";
-  // string myPath = "./SR1/";
+  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT_with_QCD/QE2/";
+  // string myPath = "./CR1/";
 
 
   TTree *newtree;
@@ -248,15 +251,19 @@ int main(int argc, char** argv)
 
       newfile = new TFile((newpath.c_str()), "update");
 
-      if (filename.find("QCDfakes") != std::string::npos) {
-        fChain = new TChain("nominal_Loose");
-      }
-      else {
+      // if (filename.find("QCDfakes") != std::string::npos) {
+      //   fChain = new TChain("nominal_Loose");
+      // }
+      // else {
         fChain = new TChain("nominal");
-      }
+      // }
  
       fChain->Add((file).c_str());
       newtree = fChain->CloneTree(0);
+      if(fChain->GetEntries() == 0){
+        std::cout<<"No events, skipping"<<std::endl;
+        continue;
+      }
       newtree->SetName("nominal");
       m_add_branches(fChain,newtree,neuralNet);
       newfile->cd();
