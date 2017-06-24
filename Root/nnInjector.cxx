@@ -42,158 +42,76 @@ void m_add_branches(
 
   activateBranches(fChain);
 
-  string jetpt;
-  string jeteta;
-  string jetphi;
-  string jetmv2c10;
-  string jete;
-
-  string phHFTMVA;
-  string phpt;
-  string phphi;
-  string phe;
-  string phcaloeta;
-  string phdrleadjet;
-  string phdrsubljet;
-  string phdrlept;
-  string phmgammalept;
-  string phmgammaleptlept;
-
   for (int event = 0; event < nentries; event++) {
 
     fChain->GetEntry(event);
     loadBar(event, nentries, 100, 50);
-    // if(jet_pt->size()==0) {continue;}
-    // if(ph_pt->size()==0) {continue;}
-    //m_nan_cleaner_upper(ph_HFT_MVA);
 
-    // Sort btag weigths and add to mbranch // 
-    ///////////////////////////////////////
-    // std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
-
-    // for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
-    //   try {
-    //     jet_tagWeightBin_leading_temp = jet_tagWeightBin->at(0);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    //   try {
-    //   jet_tagWeightBin_subleading_temp = jet_tagWeightBin->at(1);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    //  try {
-    //   jet_tagWeightBin_subsubleading_temp = jet_tagWeightBin->at(2);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    // }
-    ////////////////////////////////////////////
-
-    //----------- Neural network
-    // m_NeuralNet_input_values["jet_tagWeightBin_leading"] = jet_tagWeightBin_leading_temp;
-    // m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = jet_tagWeightBin_subleading_temp;
-    // m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = jet_tagWeightBin_subsubleading_temp;
-
+//*weight_mc*weight_pileup*ph_SF_eff_sel*ph_SF_iso_sel*weight_leptonSF*weight_jvt*weight_bTagSF_Continuous*event_norm * event_lumi
     m_NeuralNet_input_values["jet_tagWeightBin_leading"] = jet_tagWeightBin_leading;
     m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = jet_tagWeightBin_subleading;
     m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = jet_tagWeightBin_subsubleading;
 
-    for(uint jet = 0; jet < 5; jet++){
-       
-      jetpt = "jet_pt_"+std::to_string(jet);
-      jeteta = "jet_eta_"+std::to_string(jet);
-      jetphi = "jet_phi_"+std::to_string(jet);
-      jetmv2c10 = "jet_mv2c10_"+std::to_string(jet);
-      jete = "jet_e_"+std::to_string(jet);
+    m_NeuralNet_input_values["jet_pt_1st"] = jet_pt_1st;
+    m_NeuralNet_input_values["jet_pt_2nd"] = jet_pt_2nd;
+    m_NeuralNet_input_values["jet_pt_3rd"] = jet_pt_3rd;
+    m_NeuralNet_input_values["jet_pt_4th"] = jet_pt_4th;
+    m_NeuralNet_input_values["jet_pt_5th"] = jet_pt_5th;
+    // m_NeuralNet_input_values["jet_pt_6th"] = jet_pt_6th;
 
-      if(jet <= jet_pt->size()-1){
-        m_NeuralNet_input_values[jetpt] = jet_pt->at(jet);
-        m_NeuralNet_input_values[jeteta] = jet_eta->at(jet);
-        m_NeuralNet_input_values[jetphi] = jet_phi->at(jet);
-        m_NeuralNet_input_values[jetmv2c10] = jet_mv2c10->at(jet);
-        m_NeuralNet_input_values[jete] = jet_e->at(jet);
-      }
-     else{
-        m_NeuralNet_input_values[jetpt] = 0;
-        m_NeuralNet_input_values[jeteta] = 0;
-        m_NeuralNet_input_values[jetphi] = 0;
-        m_NeuralNet_input_values[jetmv2c10] = 0;
-        m_NeuralNet_input_values[jete] = 0;
-      }
-    }
     m_NeuralNet_input_values["event_mwt"] = event_mwt;
     m_NeuralNet_input_values["event_nbjets77"] = event_nbjets77;
     m_NeuralNet_input_values["met_met"] = met_met;
-    m_NeuralNet_input_values["met_phi"] = met_phi;
+    // m_NeuralNet_input_values["met_phi"] = met_phi;
     m_NeuralNet_input_values["event_HT"] = event_HT;
     m_NeuralNet_input_values["event_njets"] = event_njets;
-    m_NeuralNet_input_values["event_mll"] = event_mll;
-
-
+    // m_NeuralNet_input_values["event_mll"] = event_mll;
 
     // Photon variabes
-    for(uint photon = 0; photon < 1; photon++){
-      if(ph_pt->size()==0) {continue;}
-      phHFTMVA = "ph_HFT_MVA_"+std::to_string(photon);
-      phpt = "ph_pt_"+std::to_string(photon);
-      phphi = "ph_phi_"+std::to_string(photon);
-      phe = "ph_e_"+std::to_string(photon);
-      phcaloeta = "ph_caloEta_"+std::to_string(photon);
-      phdrleadjet = "ph_drleadjet_"+std::to_string(photon);
-      phdrsubljet = "ph_drsubljet_"+std::to_string(photon);
+    // m_NeuralNet_input_values["ph_mgammalept_sel"] = ph_mgammalept_sel;
+    m_NeuralNet_input_values["ph_drsubljet_sel"] = ph_drsubljet_sel;
+    m_NeuralNet_input_values["ph_drlept_sel"] = ph_drlept_sel;
+    m_NeuralNet_input_values["ph_drleadjet_sel"] = ph_drleadjet_sel;
 
-      phdrlept = "ph_drlept_"+std::to_string(photon);
-      phmgammalept = "ph_mgammalept_"+std::to_string(photon);
-      phmgammaleptlept = "ph_mgammaleptlept_"+std::to_string(photon);
+    m_NeuralNet_input_values["ph_e_sel"] = ph_e_sel;
+    m_NeuralNet_input_values["ph_phi_sel"] = ph_phi_sel;
+    // m_NeuralNet_input_values["ph_mgammaleptlept_sel"] = ph_mgammaleptlept_sel;
+    m_NeuralNet_input_values["ph_HFT_MVA_sel"] = ph_HFT_MVA_sel;
+    // m_NeuralNet_input_values["ph_isoFCT_sel"] = ph_isoFCT_sel;
+    // m_NeuralNet_input_values["ph_SF_iso_sel"] = ph_SF_iso_sel;
+    // m_NeuralNet_input_values["ph_SF_eff_sel"] = ph_SF_eff_sel;
+ 
+    // std::cout << "jet_tagWeightBin_leading = " << jet_tagWeightBin_leading << std::endl; 
+    // std::cout << "jet_tagWeightBin_subleading = " << jet_tagWeightBin_subleading << std::endl; 
+    // std::cout << "jet_tagWeightBin_subsubleading = " << jet_tagWeightBin_subsubleading << std::endl; 
 
-      if(photon <= ph_pt->size()-1) {
-        m_NeuralNet_input_values[phHFTMVA] = ph_HFT_MVA->at(photon);
-        m_NeuralNet_input_values[phpt] = ph_pt->at(photon);
-        m_NeuralNet_input_values[phphi] = ph_phi->at(photon);
-        m_NeuralNet_input_values[phe] = ph_e->at(photon);
-        m_NeuralNet_input_values[phcaloeta] = ph_caloEta->at(photon);
-        m_NeuralNet_input_values[phdrleadjet] = ph_drleadjet->at(photon);
-        m_NeuralNet_input_values[phdrsubljet] = ph_drsubljet->at(photon);
+    // std::cout << "jet_pt_1st = " << jet_pt_1st << std::endl; 
+    // std::cout << "jet_pt_2nd = " << jet_pt_2nd << std::endl; 
+    // std::cout << "jet_pt_3rd = " << jet_pt_3rd << std::endl; 
+    // std::cout << "jet_pt_4th = " << jet_pt_4th << std::endl; 
+    // std::cout << "jet_pt_5th = " << jet_pt_5th << std::endl; 
+    // // std::cout << "jet_pt_6th = " << jet_pt_6th << std::endl; 
 
-        m_NeuralNet_input_values[phdrlept] = ph_drlept->at(photon);
-        m_NeuralNet_input_values[phmgammalept] = ph_mgammalept->at(photon);
-        m_NeuralNet_input_values[phmgammaleptlept] = ph_mgammaleptlept->at(photon);
-      }
-     else{
-        m_NeuralNet_input_values[phHFTMVA] = 0;
-        m_NeuralNet_input_values[phpt] = 0;
-        m_NeuralNet_input_values[phphi] = 0;
-        m_NeuralNet_input_values[phe] = 0;
-        m_NeuralNet_input_values[phcaloeta] = 0;
-        m_NeuralNet_input_values[phdrleadjet] = 0;
-        m_NeuralNet_input_values[phdrsubljet] = 0;
-        m_NeuralNet_input_values[phdrlept] = 0;
-        m_NeuralNet_input_values[phmgammalept] = 0;
-        m_NeuralNet_input_values[phmgammaleptlept] = 0;
-      }
-    }
+    // std::cout << "event_mwt = " << event_mwt << std::endl; 
+    // std::cout << "event_nbjets77 = " << event_nbjets77 << std::endl; 
+    // std::cout << "met_met = " << met_met << std::endl; 
+    // std::cout << "event_HT = " << event_HT << std::endl; 
+    // std::cout << "event_njets = " << event_njets << std::endl; 
 
-    // for (UInt_t pht = 0; pht < ph_pt->size(); pht++) {
-    //  m_ph_PPT_MVA[pht]=-99;
-    //  // shower shapes with photonID ntuples
-    //  m_NeuralNet_input_values["y_Reta"] = ph_reta->at(pht);
-    //  m_NeuralNet_input_values["y_Rphi"] = ph_rphi->at(pht);
-    //  m_NeuralNet_input_values["y_Rhad"] = ph_rhad->at(pht);
-    //  m_NeuralNet_input_values["y_weta1"] = ph_ws3->at(pht);
-    //  m_NeuralNet_input_values["y_fracs1"] = ph_fracm->at(pht);
-    //  m_NeuralNet_input_values["y_weta2"] = ph_weta2->at(pht);
+ 
+    // std::cout << "ph_drsubljet_sel = " << ph_drsubljet_sel << std::endl; 
+    // std::cout << "ph_drlept_sel = " << ph_drlept_sel << std::endl; 
+    // std::cout << "ph_e_sel = " << ph_e_sel << std::endl; 
+    // std::cout << "ph_phi_sel = " << ph_phi_sel << std::endl; 
+    // std::cout << "ph_drleadjet_sel = " << ph_drleadjet_sel << std::endl; 
+    // std::cout << "ph_HFT_MVA_sel = " << ph_HFT_MVA_sel << std::endl; 
 
-    //  auto out_vals = m_NeuralNet->compute(m_NeuralNet_input_values);
-    //  for (const auto& out: out_vals) {
-    //    m_ph_PPT_MVA[pht] = out.second;
-    //  }
-    // }
 
     // Fill the tree before calculating NN
     // Calculate lwtnn NN output
     auto out_vals = neuralNet->compute(m_NeuralNet_input_values);
     for (const auto& out: out_vals) {
+      //std::cout<<"MVA = "<< out.second << std::endl;
       m_event_ELT_MVA = out.second;
     }
 
@@ -206,9 +124,9 @@ void m_add_branches(
 
 int main(int argc, char** argv)
 {
-  gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
+  // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/lwtnn_EventLevel_withQCD.json");
+  std::string in_file_name("../json/model13b_600_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
@@ -220,13 +138,14 @@ int main(int argc, char** argv)
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/SR1/";
   // Where we read from:
-  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/QE2/";
+  //string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar/CR1/";
+  string path ="/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_flattened/SR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"ejets","mujets"};
-  // string channels[] ={"mumu"};
+  //string channels[] ={"ejets","mujets"};
+  string channels[] ={"ejets", "mujets"};
   // Where we save to:
-  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT_with_QCD/QE2/";
-  // string myPath = "./CR1/";
+  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELT_with_QCD/QE2/";
+  string myPath = "../SR1/";
 
 
   TTree *newtree;
@@ -248,15 +167,11 @@ int main(int argc, char** argv)
       string file = path+c+"/"+filename;
       string newpath = myPath + c+"/"+filename;
       std::cout<<c<<": "<< filename<< std::endl;
+      std::cout<<c<<"Saving to "<<newpath<< std::endl;
 
       newfile = new TFile((newpath.c_str()), "update");
 
-      // if (filename.find("QCDfakes") != std::string::npos) {
-      //   fChain = new TChain("nominal_Loose");
-      // }
-      // else {
-        fChain = new TChain("nominal");
-      // }
+      fChain = new TChain("nominal");
  
       fChain->Add((file).c_str());
       newtree = fChain->CloneTree(0);
@@ -264,7 +179,6 @@ int main(int argc, char** argv)
         std::cout<<"No events, skipping"<<std::endl;
         continue;
       }
-      newtree->SetName("nominal");
       m_add_branches(fChain,newtree,neuralNet);
       newfile->cd();
       newtree->Write();

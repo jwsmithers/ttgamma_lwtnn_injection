@@ -34,16 +34,8 @@
 #include "lwtnn/Stack.hh" // <-- added for exceptions
 using namespace std;
 
-//void m_add_nn();
-////////For multiclass /////////////
-// std::vector<float> m_ph_ISR_MVA;
-// std::vector<float> m_ph_FSR_MVA;
-// std::vector<float> m_ph_HFake_MVA;
-// std::vector<float> m_ph_eFake_MVA;
-// std::vector<float> m_ph_OtherPrompt_MVA;
-/////////////////////////////////////////////
 ////////For PPT /////////////
-float m_event_ELT_MVA;
+Float_t m_event_ELT_MVA;
 /////////////////////////////////////////////
 lwt::JSONConfig m_config_netFile;
 std::map<std::string,double> m_NeuralNet_input_values;
@@ -119,9 +111,6 @@ vector<char>    *jet_isbtagged_77= nullptr;
 vector<char>    *jet_isbtagged_85= nullptr;
 vector<char>    *jet_isbtagged_70= nullptr;
 vector<int>     *jet_tagWeightBin= nullptr;
-float           jet_tagWeightBin_leading;
-float           jet_tagWeightBin_subleading;
-float           jet_tagWeightBin_subsubleading;
 Float_t         met_met;
 Float_t         met_phi;
 Int_t           ejets_2015;
@@ -263,16 +252,55 @@ Double_t        event_lumi;
 
 
 
-//Some new variables
-float ISR_MVA = -1;
-float FSR_MVA = -1;
-float hadronfake_MVA = -1;
-float egammafake_MVA = -1;
-float other_MVA = -1;
+float jet_pt_1st;
+float jet_pt_2nd;
+float jet_pt_3rd;
+float jet_pt_4th;
+float jet_pt_5th;
+float jet_pt_6th;
+
+float jet_tagWeightBin_leading;
+float jet_tagWeightBin_subleading;
+float jet_tagWeightBin_subsubleading;
+
+float ph_mgammalept_sel;
+float ph_drsubljet_sel;
+float ph_drlept_sel;
+float ph_e_sel;
+float ph_phi_sel;
+float ph_drleadjet_sel;
+float ph_mgammaleptlept_sel;
+float ph_HFT_MVA_sel;
+float ph_isoFCT_sel;
+
+float ph_SF_iso_sel;
+float ph_SF_eff_sel;
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
+
+	SETBRANCH(jet_pt_1st);
+	SETBRANCH(jet_pt_2nd);
+	SETBRANCH(jet_pt_3rd);
+	SETBRANCH(jet_pt_4th);
+	SETBRANCH(jet_pt_5th);
+	SETBRANCH(jet_pt_6th);
+	SETBRANCH(jet_tagWeightBin_leading);
+	SETBRANCH(jet_tagWeightBin_subleading);
+	SETBRANCH(jet_tagWeightBin_subsubleading);
+	SETBRANCH(ph_mgammalept_sel);
+	SETBRANCH(ph_drsubljet_sel);
+	SETBRANCH(ph_drlept_sel);
+	SETBRANCH(ph_e_sel);
+	SETBRANCH(ph_phi_sel);
+	SETBRANCH(ph_drleadjet_sel);
+	SETBRANCH(ph_mgammaleptlept_sel);
+	SETBRANCH(ph_HFT_MVA_sel);
+	SETBRANCH(ph_isoFCT_sel);
+	SETBRANCH(ph_SF_iso_sel);
+	SETBRANCH(ph_SF_eff_sel);
+
 	SETBRANCH(weight_mm_ejets);
 	SETBRANCH(weight_mm_mujets);
 	SETBRANCH(weight_mc);
