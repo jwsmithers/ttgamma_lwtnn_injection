@@ -275,57 +275,10 @@ float m_ph_isoFCT_sel;
 float m_ph_SF_iso_sel;
 float m_ph_SF_eff_sel;
 
-// // And if they have been derived already...
-// float jet_pt_1st;
-// float jet_pt_2nd;
-// float jet_pt_3rd;
-// float jet_pt_4th;
-// float jet_pt_5th;
-// float jet_pt_6th;
-
-// float jet_tagWeightBin_leading;
-// float jet_tagWeightBin_subleading;
-// float jet_tagWeightBin_subsubleading;
-
-// float ph_mgammalept_sel;
-// float ph_drsubljet_sel;
-// float ph_drlept_sel;
-// float ph_e_sel;
-// float ph_phi_sel;
-// float ph_drleadjet_sel;
-// float ph_mgammaleptlept_sel;
-// float ph_HFT_MVA_sel;
-// float ph_isoFCT_sel;
-
-// float ph_SF_iso_sel;
-// float ph_SF_eff_sel;
-
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
-
-
-	// SETBRANCH(jet_pt_1st);
-	// SETBRANCH(jet_pt_2nd);
-	// SETBRANCH(jet_pt_3rd);
-	// SETBRANCH(jet_pt_4th);
-	// SETBRANCH(jet_pt_5th);
-	// SETBRANCH(jet_pt_6th);
-	// SETBRANCH(jet_tagWeightBin_leading);
-	// SETBRANCH(jet_tagWeightBin_subleading);
-	// SETBRANCH(jet_tagWeightBin_subsubleading);
-	// SETBRANCH(ph_mgammalept_sel);
-	// SETBRANCH(ph_drsubljet_sel);
-	// SETBRANCH(ph_drlept_sel);
-	// SETBRANCH(ph_e_sel);
-	// SETBRANCH(ph_phi_sel);
-	// SETBRANCH(ph_drleadjet_sel);
-	// SETBRANCH(ph_mgammaleptlept_sel);
-	// SETBRANCH(ph_HFT_MVA_sel);
-	// SETBRANCH(ph_isoFCT_sel);
-	// SETBRANCH(ph_SF_iso_sel);
-	// SETBRANCH(ph_SF_eff_sel);
 
 	SETBRANCH(weight_mm_ejets);
 	SETBRANCH(weight_mm_mujets);
