@@ -185,22 +185,21 @@ int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/model13b_600_singlelepton_ELD.json");
-  //std::string in_file_name("../json/model4_600_dilepton_ELD.json");
+  std::string in_file_name("../json/model3_300_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
   }
 
   // path to ntuples from AnalysisTop
-  string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
+  //string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   // Where we read from:
-  // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"mujets"};
+  string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
+  string channels[] ={"ejets"};
   //string channels[] ={"ee", "emu","mumu"};
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELD_with_QCD/QE2/";
-  string myPath = "../CR1/";
+  string myPath = "../QE2/";
 
 
   TTree *newtree;
@@ -226,7 +225,7 @@ int main(int argc, char** argv)
 
       newfile = new TFile((newpath.c_str()), "update");
 
-      fChain = new TChain("nominal");
+      fChain = new TChain("nominal_Loose");
  
       fChain->Add((file).c_str());
 
