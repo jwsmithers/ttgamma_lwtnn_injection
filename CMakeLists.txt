@@ -1,7 +1,7 @@
 # CMakeLists.txt for event package. It creates a library with dictionary and a main program
 set(CMAKE_C_COMPILER /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/x86_64/Gcc/gcc493_x86_64_slc6/slc6/gcc49/bin/gcc)
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(nnInjector)
+project(nnInjector C CXX)
 include_directories(include)
 
 
@@ -16,28 +16,35 @@ include(${ROOT_USE_FILE})
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 add_definitions(${ROOT_CXX_FLAGS})
 #set (CMAKE_CXX_FLAGS " -g -O0 -v -da -Q")
+set (CMAKE_CXX_FLAGS " -g -ggdb")
 
 ROOT_GENERATE_DICTIONARY(G__nnInjector nnInjector.h LINKDEF LinkDef.h)
 #---Create a shared library with geneated dictionary
 
-add_library(lwtnn SHARED
-Root/Exceptions.cxx
-Root/Graph.cxx
-Root/InputPreprocessor.cxx
-Root/LightweightGraph.cxx
-Root/LightweightNeuralNetwork.cxx
-Root/lightweight_nn_streamers.cxx
-Root/lwtnn-benchmark-rnn.cxx
-Root/NanReplacer.cxx
-Root/parse_json.cxx
-Root/Stack.cxx
+#add_library(lwtnn SHARED
+#Root/Exceptions.cxx
+#Root/Graph.cxx
+#Root/InputPreprocessor.cxx
+#Root/LightweightGraph.cxx
+#Root/LightweightNeuralNetwork.cxx
+#Root/lightweight_nn_streamers.cxx
+#Root/lwtnn-benchmark-rnn.cxx
+#Root/NanReplacer.cxx
+#Root/parse_json.cxx
+#Root/Stack.cxx
+#)
+
+file(GLOB NNInjector 
+"include/*.h"
+"include/lwtnn/*.h"
+"Root/*.cxx"
 )
 
-add_library(NNInjector SHARED Root/nnInjector.cxx )
-target_link_libraries(NNInjector ${ROOT_LIBRARIES} lwtnn )
+#target_link_libraries(NNInjector ${ROOT_LIBRARIES})
 
 #---Create  a main program using the library
-add_executable(nnInjector Root/nnInjector.cxx)
-target_link_libraries(nnInjector NNInjector)
+#add_executable(nnInjector Root/nnInjector.cxx)
+add_executable(nnInjector ${NNInjector})
+target_link_libraries(nnInjector ${ROOT_LIBRARIES})
 
 
