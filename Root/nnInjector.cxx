@@ -75,60 +75,73 @@ void m_add_branches(
     m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
     m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
 
+
+    m_jet_pt_1st=20000;
+    m_jet_pt_2nd=20000;
+    m_jet_pt_3rd=20000;
+    m_jet_pt_4th=20000;
+    m_jet_pt_5th=20000;
+    m_jet_pt_6th=20000;
+
     // Get certain jets 
-    for(uint jetn = 0; jetn < jet_pt->size();jetn++){
-      try {
-        m_jet_pt_1st = jet_pt->at(0);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-      try {
-        m_jet_pt_2nd = jet_pt->at(1);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-      try {
-        m_jet_pt_3rd = jet_pt->at(2);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-      try {
-        m_jet_pt_4th = jet_pt->at(3);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-      try {
-        m_jet_pt_5th = jet_pt->at(4);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-      try {
-        m_jet_pt_6th = jet_pt->at(5);
-        } catch(const std::out_of_range& oor) {
-        continue;
-        }
-    }
+    // for(uint jetn = 0; jetn < jet_pt->size();jetn++){
+    //   try {
+    //     m_jet_pt_1st = jet_pt->at(0);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    //   try {
+    //     m_jet_pt_2nd = jet_pt->at(1);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    //   try {
+    //     m_jet_pt_3rd = jet_pt->at(2);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    //   try {
+    //     m_jet_pt_4th = jet_pt->at(3);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    //   try {
+    //     m_jet_pt_5th = jet_pt->at(4);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    //   try {
+    //     m_jet_pt_6th = jet_pt->at(5);
+    //     } catch(const std::out_of_range& oor) {
+    //     continue;
+    //     }
+    // }
 
     // Sort btag weigths and add to mbranch // 
-    std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
 
-    for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
-      try {
-      m_jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
-      } catch(const std::out_of_range& oor) {
-        continue;
-      }
-      try {
-      m_jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
-      } catch(const std::out_of_range& oor) {
-        continue;
-      }
-     try {
-      m_jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
-      } catch(const std::out_of_range& oor) {
-        continue;
-      }
-    }
+    m_jet_tagWeightBin_leading=1;
+    m_jet_tagWeightBin_subleading=1;
+    m_jet_tagWeightBin_subsubleading=1;
+
+    // std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
+
+    // for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
+    //   try {
+    //   m_jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
+    //   } catch(const std::out_of_range& oor) {
+    //     continue;
+    //   }
+    //   try {
+    //   m_jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
+    //   } catch(const std::out_of_range& oor) {
+    //     continue;
+    //   }
+    //  try {
+    //   m_jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
+    //   } catch(const std::out_of_range& oor) {
+    //     continue;
+    //   }
+    // }
 
     m_NeuralNet_input_values["jet_tagWeightBin_leading"] = m_jet_tagWeightBin_leading;
     m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = m_jet_tagWeightBin_subleading;
@@ -185,7 +198,8 @@ int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/model2_400_dilepton_ELD.json");
+  std::string in_file_name("../json/model1_300_dilepton_ELD.json");
+  //std::string in_file_name("../json/model4_300_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
@@ -195,8 +209,8 @@ int main(int argc, char** argv)
   // Where we read from:
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   //string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  //string channels[] ={"ejets"};
-  string channels[] ={"ee", "emu","mumu"};
+  //string channels[] ={"ejets","mujets"};
+  string channels[] ={"emu"};
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELD_with_QCD/QE2/";
   string myPath = "../CR1/";
@@ -205,7 +219,8 @@ int main(int argc, char** argv)
   TTree *newtree;
   TChain *fChain;
   TFile *newfile;
-  lwt::LightweightNeuralNetwork *neuralNet;
+  // lwt::LightweightNeuralNetwork *neuralNet;
+
   lwt::JSONConfig  config_netFile = lwt::parse_json(in_file);
   std::cout << "Neural Network has " << config_netFile.layers.size() << " layers"<< std::endl;
 
@@ -213,7 +228,7 @@ int main(int argc, char** argv)
     for(const string &c : channels){
 
 
-      neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
+      m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
       config_netFile.layers, config_netFile.outputs);
 
 
@@ -233,9 +248,12 @@ int main(int argc, char** argv)
       newtree = fChain->CloneTree(0);
       if(fChain->GetEntries() == 0){
         std::cout<<"No events, skipping"<<std::endl;
+        newfile->cd();
+        newtree->Write();
+        newfile->Close();
         continue;
       }
-      m_add_branches(fChain,newtree,neuralNet);
+      m_add_branches(fChain,newtree,m_neuralNet);
       newfile->cd();
       newtree->Write();
       newfile->Close();

@@ -39,7 +39,7 @@ float m_event_ELD_MVA;
 /////////////////////////////////////////////
 lwt::JSONConfig m_config_netFile;
 std::map<std::string,double> m_NeuralNet_input_values;
-lwt::LightweightNeuralNetwork *m_NeuralNet;
+lwt::LightweightNeuralNetwork *m_neuralNet;
 /////////////////////////////////////////////
 
 
