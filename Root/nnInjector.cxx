@@ -76,7 +76,7 @@ void m_add_branches(
     m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
 
 
-    Get certain jets 
+    // Get certain jets 
     for(uint jetn = 0; jetn < jet_pt->size();jetn++){
       try {
         m_jet_pt_1st = jet_pt->at(0);
@@ -111,10 +111,6 @@ void m_add_branches(
     }
 
     // Sort btag weigths and add to mbranch // 
-
-    m_jet_tagWeightBin_leading=1;
-    m_jet_tagWeightBin_subleading=1;
-    m_jet_tagWeightBin_subsubleading=1;
 
     std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
 
@@ -191,8 +187,8 @@ int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name("../json/model1_300_dilepton_ELD.json");
-  //std::string in_file_name("../json/model4_300_singlelepton_ELD.json");
+  // std::string in_file_name("../json/model1_300_dilepton_ELD.json");
+  std::string in_file_name("../json/model4_300_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
   if(!in_file){
     std::cout<<"Error: no nn input file!"<< std::endl;
@@ -202,8 +198,8 @@ int main(int argc, char** argv)
   // Where we read from:
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   //string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  //string channels[] ={"ejets","mujets"};
-  string channels[] ={"emu","mumu","ee"};
+  string channels[] ={"ejets","mujets"};
+  // string channels[] ={"emu","mumu","ee"};
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELD_with_QCD/QE2/";
   string myPath = "../CR1/";
@@ -241,9 +237,6 @@ int main(int argc, char** argv)
       newtree = fChain->CloneTree(0);
       if(fChain->GetEntries() == 0){
         std::cout<<"No events, skipping"<<std::endl;
-        newfile->cd();
-        newtree->Write();
-        newfile->Close();
         continue;
       }
       m_add_branches(fChain,newtree,m_neuralNet);
