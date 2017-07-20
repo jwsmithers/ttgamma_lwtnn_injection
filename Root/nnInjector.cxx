@@ -76,46 +76,39 @@ void m_add_branches(
     m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
 
 
-    m_jet_pt_1st=20000;
-    m_jet_pt_2nd=20000;
-    m_jet_pt_3rd=20000;
-    m_jet_pt_4th=20000;
-    m_jet_pt_5th=20000;
-    m_jet_pt_6th=20000;
-
-    // Get certain jets 
-    // for(uint jetn = 0; jetn < jet_pt->size();jetn++){
-    //   try {
-    //     m_jet_pt_1st = jet_pt->at(0);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    //   try {
-    //     m_jet_pt_2nd = jet_pt->at(1);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    //   try {
-    //     m_jet_pt_3rd = jet_pt->at(2);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    //   try {
-    //     m_jet_pt_4th = jet_pt->at(3);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    //   try {
-    //     m_jet_pt_5th = jet_pt->at(4);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    //   try {
-    //     m_jet_pt_6th = jet_pt->at(5);
-    //     } catch(const std::out_of_range& oor) {
-    //     continue;
-    //     }
-    // }
+    Get certain jets 
+    for(uint jetn = 0; jetn < jet_pt->size();jetn++){
+      try {
+        m_jet_pt_1st = jet_pt->at(0);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+      try {
+        m_jet_pt_2nd = jet_pt->at(1);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+      try {
+        m_jet_pt_3rd = jet_pt->at(2);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+      try {
+        m_jet_pt_4th = jet_pt->at(3);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+      try {
+        m_jet_pt_5th = jet_pt->at(4);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+      try {
+        m_jet_pt_6th = jet_pt->at(5);
+        } catch(const std::out_of_range& oor) {
+        continue;
+        }
+    }
 
     // Sort btag weigths and add to mbranch // 
 
@@ -123,25 +116,25 @@ void m_add_branches(
     m_jet_tagWeightBin_subleading=1;
     m_jet_tagWeightBin_subsubleading=1;
 
-    // std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
+    std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
 
-    // for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
-    //   try {
-    //   m_jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    //   try {
-    //   m_jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    //  try {
-    //   m_jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
-    //   } catch(const std::out_of_range& oor) {
-    //     continue;
-    //   }
-    // }
+    for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
+      try {
+      m_jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+      try {
+      m_jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+     try {
+      m_jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
+      } catch(const std::out_of_range& oor) {
+        continue;
+      }
+    }
 
     m_NeuralNet_input_values["jet_tagWeightBin_leading"] = m_jet_tagWeightBin_leading;
     m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = m_jet_tagWeightBin_subleading;
@@ -210,7 +203,7 @@ int main(int argc, char** argv)
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   //string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
   //string channels[] ={"ejets","mujets"};
-  string channels[] ={"emu"};
+  string channels[] ={"emu","mumu","ee"};
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELD_with_QCD/QE2/";
   string myPath = "../CR1/";
