@@ -19,7 +19,7 @@ lsetup "lcgenv -p LCG_88 x86_64-slc6-gcc49-opt pip"
 lsetup "lcgenv -p LCG_88 x86_64-slc6-gcc49-opt h5py"
 lsetup "lcgenv -p LCG_88 x86_64-slc6-gcc49-opt gdb"
 
-localSetupSFT -q releases/LCG_88/eigen/3.2.9
+localSetupSFT -q releases/LCG_88/eigen/3.2.9 --cmtconfig x86_64-slc6-gcc49-opt
 localSetupBoost -q boost-1.60.0-python2.7-x86_64-slc6-gcc49
 EIGEN_INC=$SFT_HOME_eigen/include/eigen3
 BOOST_INC=$ALRB_BOOST_ROOT/include

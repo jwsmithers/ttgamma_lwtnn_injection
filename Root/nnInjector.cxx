@@ -47,7 +47,9 @@ void m_add_branches(
   newtree->Branch("ph_SF_eff_sel",&m_ph_SF_eff_sel);   
   newtree->Branch("ph_SF_iso_sel",&m_ph_SF_iso_sel);   
 
+  newtree->Branch("event_ELD_MVA_all",&m_event_ELD_MVA_all);   
   newtree->Branch("event_ELD_MVA",&m_event_ELD_MVA);   
+
 
   activateBranches(fChain);
 
@@ -56,26 +58,6 @@ void m_add_branches(
     fChain->GetEntry(event);
     loadBar(event, nentries, 100, 50);
     
-    if(selph_index1<0){continue;}
-
-    // If we run on nominal samples we need to add variables.
-    // if(Run_on_Full_Samples==true){
-    // Get good photons
-    m_ph_drsubljet_sel = ph_drsubljet->at(selph_index1);
-    m_ph_drlept_sel = ph_drlept->at(selph_index1);
-    m_ph_e_sel = ph_e->at(selph_index1);
-    m_ph_phi_sel = ph_phi->at(selph_index1);
-    m_ph_drleadjet_sel = ph_drleadjet->at(selph_index1);
-    m_ph_mgammalept_sel = ph_mgammalept->at(selph_index1);
-    m_ph_mgammaleptlept_sel = ph_mgammaleptlept->at(selph_index1);
-    m_ph_HFT_MVA_sel = ph_HFT_MVA->at(selph_index1);
-    m_ph_isoFCT_sel = ph_isoFCT->at(selph_index1);
-
-    // Get good weights
-    m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
-    m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
-
-
     // Get certain jets 
     for(uint jetn = 0; jetn < jet_pt->size();jetn++){
       try {
@@ -132,51 +114,72 @@ void m_add_branches(
       }
     }
 
-    m_NeuralNet_input_values["jet_tagWeightBin_leading"] = m_jet_tagWeightBin_leading;
-    m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = m_jet_tagWeightBin_subleading;
-    m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = m_jet_tagWeightBin_subsubleading;
+    m_event_ELD_MVA_all->resize(ph_pt->size());
 
-    m_NeuralNet_input_values["jet_pt_1st"] = m_jet_pt_1st;
-    m_NeuralNet_input_values["jet_pt_2nd"] = m_jet_pt_2nd;
-    m_NeuralNet_input_values["jet_pt_3rd"] = m_jet_pt_3rd;
-    m_NeuralNet_input_values["jet_pt_4th"] = m_jet_pt_4th;
-    m_NeuralNet_input_values["jet_pt_5th"] = m_jet_pt_5th;
-    m_NeuralNet_input_values["jet_pt_6th"] = m_jet_pt_6th;
+    for(int photon = 0 ; photon < ph_pt->size(); photon++){
+      m_event_ELD_MVA_all->at(photon)=-99;
 
-    // Photon variabes
-    m_NeuralNet_input_values["ph_mgammalept_sel"] = m_ph_mgammalept_sel;
-    m_NeuralNet_input_values["ph_drsubljet_sel"] = m_ph_drsubljet_sel;
-    m_NeuralNet_input_values["ph_drlept_sel"] = m_ph_drlept_sel;
-    m_NeuralNet_input_values["ph_drleadjet_sel"] = m_ph_drleadjet_sel;
+      m_NeuralNet_input_values["jet_tagWeightBin_leading"] = m_jet_tagWeightBin_leading;
+      m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = m_jet_tagWeightBin_subleading;
+      m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = m_jet_tagWeightBin_subsubleading;
 
-    m_NeuralNet_input_values["ph_e_sel"] = m_ph_e_sel;
-    m_NeuralNet_input_values["ph_phi_sel"] = m_ph_phi_sel;
-    m_NeuralNet_input_values["ph_mgammaleptlept_sel"] = m_ph_mgammaleptlept_sel;
-    m_NeuralNet_input_values["ph_HFT_MVA_sel"] = m_ph_HFT_MVA_sel;
-    m_NeuralNet_input_values["ph_isoFCT_sel"] = m_ph_isoFCT_sel;
-    m_NeuralNet_input_values["ph_SF_iso_sel"] = m_ph_SF_iso_sel;
-    m_NeuralNet_input_values["ph_SF_eff_sel"] = m_ph_SF_eff_sel;
+      m_NeuralNet_input_values["jet_pt_1st"] = m_jet_pt_1st;
+      m_NeuralNet_input_values["jet_pt_2nd"] = m_jet_pt_2nd;
+      m_NeuralNet_input_values["jet_pt_3rd"] = m_jet_pt_3rd;
+      m_NeuralNet_input_values["jet_pt_4th"] = m_jet_pt_4th;
+      m_NeuralNet_input_values["jet_pt_5th"] = m_jet_pt_5th;
+      m_NeuralNet_input_values["jet_pt_6th"] = m_jet_pt_6th;
+
+      // Photon variabes
+      m_NeuralNet_input_values["ph_mgammalept_sel"] = ph_mgammalept->at(photon);
+      m_NeuralNet_input_values["ph_drsubljet_sel"] = ph_drsubljet->at(photon);
+      m_NeuralNet_input_values["ph_drlept_sel"] = ph_drlept->at(photon);
+      m_NeuralNet_input_values["ph_drleadjet_sel"] = ph_drleadjet->at(photon);
+
+      m_NeuralNet_input_values["ph_e_sel"] = ph_e->at(photon);
+      m_NeuralNet_input_values["ph_phi_sel"] = ph_phi->at(photon);
+      m_NeuralNet_input_values["ph_mgammaleptlept_sel"] = ph_mgammaleptlept->at(photon);
+      m_NeuralNet_input_values["ph_HFT_MVA_sel"] = ph_HFT_MVA->at(photon);
+      m_NeuralNet_input_values["ph_isoFCT_sel"] = ph_isoFCT->at(photon);
+      m_NeuralNet_input_values["ph_SF_iso_sel"] = ph_SF_iso->at(photon);
+      m_NeuralNet_input_values["ph_SF_eff_sel"] = ph_SF_eff->at(photon);
+
+      m_NeuralNet_input_values["event_mwt"] = event_mwt;
+      m_NeuralNet_input_values["event_nbjets77"] = event_nbjets77;
+      m_NeuralNet_input_values["met_met"] = met_met;
+      m_NeuralNet_input_values["met_phi"] = met_phi;
+      m_NeuralNet_input_values["event_HT"] = event_HT;
+      m_NeuralNet_input_values["event_njets"] = event_njets;
+      m_NeuralNet_input_values["event_mll"] = event_mll;
 
 
-   
-    m_NeuralNet_input_values["event_mwt"] = event_mwt;
-    m_NeuralNet_input_values["event_nbjets77"] = event_nbjets77;
-    m_NeuralNet_input_values["met_met"] = met_met;
-    m_NeuralNet_input_values["met_phi"] = met_phi;
-    m_NeuralNet_input_values["event_HT"] = event_HT;
-    m_NeuralNet_input_values["event_njets"] = event_njets;
-    m_NeuralNet_input_values["event_mll"] = event_mll;
+      // Calculate lwtnn NN output
+      auto out_vals = neuralNet->compute(m_NeuralNet_input_values);
+      for (const auto& out: out_vals) {
+        //std::cout<<"MVA = "<< out.second << std::endl;
+        m_event_ELD_MVA_all->at(photon) = out.second;
+      }
+    } // end loop over photons
 
-
-    // Fill the tree before calculating NN
-    // Calculate lwtnn NN output
-    auto out_vals = neuralNet->compute(m_NeuralNet_input_values);
-    for (const auto& out: out_vals) {
-      //std::cout<<"MVA = "<< out.second << std::endl;
-      m_event_ELD_MVA = out.second;
+      // Save good photons
+    if(selph_index1 >= 0) {
+      m_ph_drsubljet_sel = ph_drsubljet->at(selph_index1);
+      m_ph_drlept_sel = ph_drlept->at(selph_index1);
+      m_ph_e_sel = ph_e->at(selph_index1);
+      m_ph_phi_sel = ph_phi->at(selph_index1);
+      m_ph_drleadjet_sel = ph_drleadjet->at(selph_index1);
+      m_ph_mgammalept_sel = ph_mgammalept->at(selph_index1);
+      m_ph_mgammaleptlept_sel = ph_mgammaleptlept->at(selph_index1);
+      m_ph_HFT_MVA_sel = ph_HFT_MVA->at(selph_index1);
+      m_ph_isoFCT_sel = ph_isoFCT->at(selph_index1);
+      // Get good weights
+      m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
+      m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
+      m_event_ELD_MVA = m_event_ELD_MVA_all->at(selph_index1);
     }
 
     newtree->Fill();
+
 
   }// end event loop
 
@@ -198,10 +201,9 @@ int main(int argc, char** argv)
   // Where we read from:
   string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   //string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"ejets","mujets"};
+  string channels[] ={"ejets"};
   // string channels[] ={"emu","mumu","ee"};
   // Where we save to:
-  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007_btagVar_w_ELD_with_QCD/QE2/";
   string myPath = "../CR1/";
 
 

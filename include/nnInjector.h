@@ -35,6 +35,7 @@
 using namespace std;
 
 ////////For PPT /////////////
+vector<float>   *m_event_ELD_MVA_all= nullptr;
 float m_event_ELD_MVA;
 /////////////////////////////////////////////
 lwt::JSONConfig m_config_netFile;
