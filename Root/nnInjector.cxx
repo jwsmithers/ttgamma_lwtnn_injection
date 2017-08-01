@@ -188,20 +188,15 @@ void m_add_branches(
 
 int main(int argc, char** argv)
 {
-  // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
+  gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name_dilepton("../json/model1_300_dilepton_ELD.json");
-  std::string in_file_name_singlelepton("../json/model4_300_singlelepton_ELD.json");
-  std::ifstream in_file_singlelepton(in_file_name_singlelepton);
-  std::ifstream in_file_dilepton(in_file_name_dilepton);
+  std::string in_file_name=("../json/model1_300_dilepton_ELD.json");
+  // std::string in_file_name=("../json/model4_300_singlelepton_ELD.json");
+  std::ifstream in_file(in_file_name);
 
-  if(!in_file_singlelepton){
-    std::cout<<"Error: no singlelepton nn input file!"<< std::endl;
+  if(!in_file){
+    std::cout<<"Error: no nn input file!"<< std::endl;
   }
-  if(!in_file_dilepton){
-    std::cout<<"Error: no dilepton nn input file!"<< std::endl;
-  }
-
 
   // path to ntuples from AnalysisTop
   // Where we read from:
@@ -214,29 +209,19 @@ int main(int argc, char** argv)
   // Where we save to:
   string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v008/CR1/";
 
-
   TFile *newfile;
   TFile *oldFile;
   TTree *newtree;
   TChain *fChain;
 
+
+  m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
+  std::cout << ": NN has " << m_config_netFile->layers.size() << " layers"<< std::endl;
+  m_neuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile->inputs, 
+  m_config_netFile->layers, m_config_netFile->outputs);
+
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
-
-      if( (strcmp(c.c_str(),"ejets")==0) || (strcmp(c.c_str(),"mujets")==0) ){
-        lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_singlelepton);
-          std::cout << ": Single lepton NN has " << config_netFile.layers.size() << " layers"<< std::endl;
-        m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
-          config_netFile.layers, config_netFile.outputs);
-
-      }
-      else if ( (strcmp(c.c_str(),"ee")==0) || (strcmp(c.c_str(),"emu")==0) || (strcmp(c.c_str(),"mumu")==0)  ){
-        lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_dilepton);
-          std::cout << ": Dilepton NN has " << config_netFile.layers.size() << " layers"<< std::endl;
-        m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
-          config_netFile.layers, config_netFile.outputs);
-
-      }
 
       string filename = argv[i];
       string file = path+c+"/"+filename;
@@ -278,9 +263,10 @@ int main(int argc, char** argv)
         newfile->cd();
         newtree->Write();
         newfile->Close();
-      }
-    }
-  }
+
+      } // end loop over trees
+    } // end  loop over channels
+  } // end loop over files
 
   return 0;
 }
