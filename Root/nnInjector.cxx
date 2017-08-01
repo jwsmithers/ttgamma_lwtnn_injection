@@ -208,8 +208,8 @@ int main(int argc, char** argv)
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"ee"};
-  // string channels[] ={"ejets"};
+  string channels[] ={"ee","emu","mumu"};
+  // string channels[] ={"ejets","mujets"};
 
   // Where we save to:
   string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v008/CR1/";
