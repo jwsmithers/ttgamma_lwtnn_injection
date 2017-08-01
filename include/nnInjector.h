@@ -32,6 +32,8 @@
 #include "lwtnn/LightweightNeuralNetwork.hh"
 #include "lwtnn/parse_json.hh"
 #include "lwtnn/Stack.hh" // <-- added for exceptions
+#include "TKey.h"
+
 using namespace std;
 
 ////////For PPT /////////////

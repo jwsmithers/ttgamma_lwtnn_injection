@@ -130,7 +130,7 @@ void m_add_branches(
       m_NeuralNet_input_values["jet_pt_5th"] = m_jet_pt_5th;
       m_NeuralNet_input_values["jet_pt_6th"] = m_jet_pt_6th;
 
-      // Photon variabes
+      // Photon variables
       m_NeuralNet_input_values["ph_mgammalept_sel"] = ph_mgammalept->at(photon);
       m_NeuralNet_input_values["ph_drsubljet_sel"] = ph_drsubljet->at(photon);
       m_NeuralNet_input_values["ph_drlept_sel"] = ph_drlept->at(photon);
@@ -190,61 +190,96 @@ int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  // std::string in_file_name("../json/model1_300_dilepton_ELD.json");
-  std::string in_file_name("../json/model4_300_singlelepton_ELD.json");
-  std::ifstream in_file(in_file_name);
-  if(!in_file){
-    std::cout<<"Error: no nn input file!"<< std::endl;
+  std::string in_file_name_dilepton("../json/model1_300_dilepton_ELD.json");
+  std::string in_file_name_singlelepton("../json/model4_300_singlelepton_ELD.json");
+  std::ifstream in_file_singlelepton(in_file_name_singlelepton);
+  std::ifstream in_file_dilepton(in_file_name_dilepton);
+
+  if(!in_file_singlelepton){
+    std::cout<<"Error: no singlelepton nn input file!"<< std::endl;
   }
+  if(!in_file_dilepton){
+    std::cout<<"Error: no dilepton nn input file!"<< std::endl;
+  }
+
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
-  //string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
+  // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
+  string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
+  // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
   string channels[] ={"ejets"};
-  // string channels[] ={"emu","mumu","ee"};
+  // string channels[] ={"ejets","mujets","emu","mumu","ee"};
+
   // Where we save to:
-  string myPath = "../CR1/";
+  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v008/CR1/";
 
 
+  TFile *newfile;
+  TFile *oldFile;
   TTree *newtree;
   TChain *fChain;
-  TFile *newfile;
-  // lwt::LightweightNeuralNetwork *neuralNet;
-
-  lwt::JSONConfig  config_netFile = lwt::parse_json(in_file);
-  std::cout << "Neural Network has " << config_netFile.layers.size() << " layers"<< std::endl;
 
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
+      printf(c.c_str());
 
+      if( (strcmp(c.c_str(),"ejets")==0) || (strcmp(c.c_str(),"mujets")==0) ){
+        lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_singlelepton);
+          std::cout << ": Single lepton NN has " << config_netFile.layers.size() << " layers"<< std::endl;
+        m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
+          config_netFile.layers, config_netFile.outputs);
 
-      m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
-      config_netFile.layers, config_netFile.outputs);
+      }
 
+      if( (strcmp(c.c_str(),"ee")==0) || (strcmp(c.c_str(),"emu")==0) || (strcmp(c.c_str(),"mumu")==0)  ){
+        lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_dilepton);
+          std::cout << ": Dilepton NN has " << config_netFile.layers.size() << " layers"<< std::endl;
+        m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
+          config_netFile.layers, config_netFile.outputs);
+
+      }
 
       string filename = argv[i];
       string file = path+c+"/"+filename;
       string newpath = myPath + c+"/"+filename;
       std::cout<<c<<": "<< filename<< std::endl;
-      std::cout<<c<<"Saving to "<<newpath<< std::endl;
+      std::cout<<c<<": Saving to "<<newpath<< std::endl;
 
-      newfile = new TFile((newpath.c_str()), "update");
+      oldFile = new TFile((file.c_str()), "read");
 
-      //fChain = new TChain("nominal_Loose");
-      fChain = new TChain("nominal");
- 
-      fChain->Add((file).c_str());
+      TList* list = oldFile->GetListOfKeys() ;
+      if (!list) { printf("<E> No keys found in file\n") ; exit(1) ; }
+      TIter next(list) ;
+      TKey* key ;
+      TObject* obj ;
+          
+      while ( key = (TKey*)next() ) {
 
-      newtree = fChain->CloneTree(0);
-      if(fChain->GetEntries() == 0){
-        std::cout<<"No events, skipping"<<std::endl;
-        continue;
+        newfile = new TFile((newpath.c_str()), "update");
+        obj = key->ReadObj() ;
+        if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (obj->GetName() == "sumWeights") ) {
+          printf("Not running over: %s \n",obj->GetName()); continue; 
+        }
+        printf("#####################################\n");
+        printf("Currently working on %s \n",obj->GetName());
+        printf("#####################################\n");
+
+        fChain = new TChain(obj->GetName());
+   
+        fChain->Add((file).c_str());
+
+        newtree = fChain->CloneTree(0);
+        if(fChain->GetEntries() == 0){
+          std::cout<<"No events, skipping"<<std::endl;
+          continue;
+        }
+        m_add_branches(fChain,newtree,m_neuralNet);
+
+        newfile->cd();
+        newtree->Write();
+        newfile->Close();
       }
-      m_add_branches(fChain,newtree,m_neuralNet);
-      newfile->cd();
-      newtree->Write();
-      newfile->Close();
     }
   }
 
