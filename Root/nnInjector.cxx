@@ -208,8 +208,8 @@ int main(int argc, char** argv)
   // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
   string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"ejets"};
-  // string channels[] ={"ejets","mujets","emu","mumu","ee"};
+  string channels[] ={"ee"};
+  // string channels[] ={"ejets"};
 
   // Where we save to:
   string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v008/CR1/";
@@ -222,7 +222,6 @@ int main(int argc, char** argv)
 
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
-      printf(c.c_str());
 
       if( (strcmp(c.c_str(),"ejets")==0) || (strcmp(c.c_str(),"mujets")==0) ){
         lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_singlelepton);
@@ -231,8 +230,7 @@ int main(int argc, char** argv)
           config_netFile.layers, config_netFile.outputs);
 
       }
-
-      if( (strcmp(c.c_str(),"ee")==0) || (strcmp(c.c_str(),"emu")==0) || (strcmp(c.c_str(),"mumu")==0)  ){
+      else if ( (strcmp(c.c_str(),"ee")==0) || (strcmp(c.c_str(),"emu")==0) || (strcmp(c.c_str(),"mumu")==0)  ){
         lwt::JSONConfig  config_netFile = lwt::parse_json(in_file_dilepton);
           std::cout << ": Dilepton NN has " << config_netFile.layers.size() << " layers"<< std::endl;
         m_neuralNet = new lwt::LightweightNeuralNetwork(config_netFile.inputs, 
@@ -256,15 +254,16 @@ int main(int argc, char** argv)
           
       while ( key = (TKey*)next() ) {
 
-        newfile = new TFile((newpath.c_str()), "update");
         obj = key->ReadObj() ;
-        if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (obj->GetName() == "sumWeights") ) {
+        if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (strcmp("sumWeights",obj->GetName()) == 0) ) {
           printf("Not running over: %s \n",obj->GetName()); continue; 
         }
         printf("#####################################\n");
         printf("Currently working on %s \n",obj->GetName());
         printf("#####################################\n");
 
+
+        newfile = new TFile((newpath.c_str()), "update");
         fChain = new TChain(obj->GetName());
    
         fChain->Add((file).c_str());
