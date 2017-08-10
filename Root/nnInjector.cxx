@@ -23,12 +23,12 @@ void m_add_branches(
 
   std::cout<< nentries << " entries" << std::endl;
 
-  newtree->Branch("jet_pt_1st",&m_jet_pt_1st);   
-  newtree->Branch("jet_pt_2nd",&m_jet_pt_2nd);   
-  newtree->Branch("jet_pt_3rd",&m_jet_pt_3rd);   
-  newtree->Branch("jet_pt_4th",&m_jet_pt_4th);   
-  newtree->Branch("jet_pt_5th",&m_jet_pt_5th);   
-  newtree->Branch("jet_pt_6th",&m_jet_pt_6th);   
+  newtree->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
+  newtree->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
+  newtree->Branch("jet_pt_3rd_correct",&m_jet_pt_3rd_correct);   
+  newtree->Branch("jet_pt_4th_correct",&m_jet_pt_4th_correct);   
+  newtree->Branch("jet_pt_5th_correct",&m_jet_pt_5th_correct);   
+  newtree->Branch("jet_pt_6th_correct",&m_jet_pt_6th_correct);   
 
   newtree->Branch("ph_drsubljet_sel",&m_ph_drsubljet_sel);   
   newtree->Branch("ph_drlept_sel",&m_ph_drlept_sel);   
@@ -40,15 +40,15 @@ void m_add_branches(
   newtree->Branch("ph_HFT_MVA_sel",&m_ph_HFT_MVA_sel);   
   newtree->Branch("ph_isoFCT_sel",&m_ph_isoFCT_sel);   
 
-  newtree->Branch("jet_tagWeightBin_leading",&m_jet_tagWeightBin_leading);   
-  newtree->Branch("jet_tagWeightBin_subleading",&m_jet_tagWeightBin_subleading);   
-  newtree->Branch("jet_tagWeightBin_subsubleading",&m_jet_tagWeightBin_subsubleading);   
+  newtree->Branch("jet_tagWeightBin_leading_correct",&m_jet_tagWeightBin_leading_correct);   
+  newtree->Branch("jet_tagWeightBin_subleading_correct",&m_jet_tagWeightBin_subleading_correct);   
+  newtree->Branch("jet_tagWeightBin_subsubleading_correct",&m_jet_tagWeightBin_subsubleading_correct);   
 
   newtree->Branch("ph_SF_eff_sel",&m_ph_SF_eff_sel);   
   newtree->Branch("ph_SF_iso_sel",&m_ph_SF_iso_sel);   
 
-  newtree->Branch("event_ELD_MVA_all",&m_event_ELD_MVA_all);   
-  newtree->Branch("event_ELD_MVA",&m_event_ELD_MVA);   
+  newtree->Branch("event_ELD_MVA_all_correct","vector<float>",&m_event_ELD_MVA_all_correct);   
+  newtree->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
 
 
   activateBranches(fChain);
@@ -61,32 +61,32 @@ void m_add_branches(
     // Get certain jets 
     for(uint jetn = 0; jetn < jet_pt->size();jetn++){
       try {
-        m_jet_pt_1st = jet_pt->at(0);
+        m_jet_pt_1st_correct = jet_pt->at(0);
         } catch(const std::out_of_range& oor) {
         continue;
         }
       try {
-        m_jet_pt_2nd = jet_pt->at(1);
+        m_jet_pt_2nd_correct = jet_pt->at(1);
         } catch(const std::out_of_range& oor) {
         continue;
         }
       try {
-        m_jet_pt_3rd = jet_pt->at(2);
+        m_jet_pt_3rd_correct = jet_pt->at(2);
         } catch(const std::out_of_range& oor) {
         continue;
         }
       try {
-        m_jet_pt_4th = jet_pt->at(3);
+        m_jet_pt_4th_correct = jet_pt->at(3);
         } catch(const std::out_of_range& oor) {
         continue;
         }
       try {
-        m_jet_pt_5th = jet_pt->at(4);
+        m_jet_pt_5th_correct = jet_pt->at(4);
         } catch(const std::out_of_range& oor) {
         continue;
         }
       try {
-        m_jet_pt_6th = jet_pt->at(5);
+        m_jet_pt_6th_correct = jet_pt->at(5);
         } catch(const std::out_of_range& oor) {
         continue;
         }
@@ -98,37 +98,37 @@ void m_add_branches(
 
     for (uint sorted = 0; sorted < jet_tagWeightBin->size(); sorted++) {
       try {
-      m_jet_tagWeightBin_leading = jet_tagWeightBin->at(0);
+      m_jet_tagWeightBin_leading_correct = jet_tagWeightBin->at(0);
       } catch(const std::out_of_range& oor) {
         continue;
       }
       try {
-      m_jet_tagWeightBin_subleading = jet_tagWeightBin->at(1);
+      m_jet_tagWeightBin_subleading_correct = jet_tagWeightBin->at(1);
       } catch(const std::out_of_range& oor) {
         continue;
       }
      try {
-      m_jet_tagWeightBin_subsubleading = jet_tagWeightBin->at(2);
+      m_jet_tagWeightBin_subsubleading_correct = jet_tagWeightBin->at(2);
       } catch(const std::out_of_range& oor) {
         continue;
       }
     }
 
-    m_event_ELD_MVA_all->resize(ph_pt->size());
+    m_event_ELD_MVA_all_correct->resize(ph_pt->size());
 
     for(int photon = 0 ; photon < ph_pt->size(); photon++){
-      m_event_ELD_MVA_all->at(photon)=-99;
+      m_event_ELD_MVA_all_correct->at(photon)=-99;
 
-      m_NeuralNet_input_values["jet_tagWeightBin_leading"] = m_jet_tagWeightBin_leading;
-      m_NeuralNet_input_values["jet_tagWeightBin_subleading"] = m_jet_tagWeightBin_subleading;
-      m_NeuralNet_input_values["jet_tagWeightBin_subsubleading"] = m_jet_tagWeightBin_subsubleading;
+      m_NeuralNet_input_values["jet_tagWeightBin_leading_correct"] = m_jet_tagWeightBin_leading_correct;
+      m_NeuralNet_input_values["jet_tagWeightBin_subleading_correct"] = m_jet_tagWeightBin_subleading_correct;
+      m_NeuralNet_input_values["jet_tagWeightBin_subsubleading_correct"] = m_jet_tagWeightBin_subsubleading_correct;
 
-      m_NeuralNet_input_values["jet_pt_1st"] = m_jet_pt_1st;
-      m_NeuralNet_input_values["jet_pt_2nd"] = m_jet_pt_2nd;
-      m_NeuralNet_input_values["jet_pt_3rd"] = m_jet_pt_3rd;
-      m_NeuralNet_input_values["jet_pt_4th"] = m_jet_pt_4th;
-      m_NeuralNet_input_values["jet_pt_5th"] = m_jet_pt_5th;
-      m_NeuralNet_input_values["jet_pt_6th"] = m_jet_pt_6th;
+      m_NeuralNet_input_values["jet_pt_1st_correct"] = m_jet_pt_1st_correct;
+      m_NeuralNet_input_values["jet_pt_2nd_correct"] = m_jet_pt_2nd_correct;
+      m_NeuralNet_input_values["jet_pt_3rd_correct"] = m_jet_pt_3rd_correct;
+      m_NeuralNet_input_values["jet_pt_4th_correct"] = m_jet_pt_4th_correct;
+      m_NeuralNet_input_values["jet_pt_5th_correct"] = m_jet_pt_5th_correct;
+      m_NeuralNet_input_values["jet_pt_6th_correct"] = m_jet_pt_6th_correct;
 
       // Photon variables
       m_NeuralNet_input_values["ph_mgammalept_sel"] = ph_mgammalept->at(photon);
@@ -156,8 +156,8 @@ void m_add_branches(
       // Calculate lwtnn NN output
       auto out_vals = neuralNet->compute(m_NeuralNet_input_values);
       for (const auto& out: out_vals) {
-        //std::cout<<"MVA = "<< out.second << std::endl;
-        m_event_ELD_MVA_all->at(photon) = out.second;
+        //std::cout<<"MVA all = "<< out.second << std::endl;
+        m_event_ELD_MVA_all_correct->at(photon) = out.second;
       }
     } // end loop over photons
 
@@ -175,7 +175,8 @@ void m_add_branches(
       // Get good weights
       m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
       m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
-      m_event_ELD_MVA = m_event_ELD_MVA_all->at(selph_index1);
+      m_event_ELD_MVA_correct = m_event_ELD_MVA_all_correct->at(selph_index1);
+      //std::cout << "MVA " <<m_event_ELD_MVA_correct <<std::endl;
     }
 
     newtree->Fill();
@@ -190,8 +191,8 @@ int main(int argc, char** argv)
 {
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name=("../json/model1_300_dilepton_ELD.json");
-  // std::string in_file_name=("../json/model4_300_singlelepton_ELD.json");
+  //std::string in_file_name=("../json/model4_300_dilepton_ELD.json");
+  std::string in_file_name=("../json/model4_300_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
 
   if(!in_file){
@@ -200,14 +201,14 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  // string path = "/eos/atlas/user/c/caudron/TtGamma_ntuples/v007/CR1/";
-  string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
+  string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1/";
+  // string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
   // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
-  string channels[] ={"ee","emu","mumu"};
-  // string channels[] ={"ejets","mujets"};
+  //string channels[] ={"ee","emu","mumu"};
+   string channels[] ={"ejets"};
 
   // Where we save to:
-  string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v008/CR1/";
+  string myPath = "../CR1/";
 
   TFile *newfile;
   TFile *oldFile;
