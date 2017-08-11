@@ -176,7 +176,6 @@ void m_add_branches(
       m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
       m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
       m_event_ELD_MVA_correct = m_event_ELD_MVA_all_correct->at(selph_index1);
-      //std::cout << "MVA " <<m_event_ELD_MVA_correct <<std::endl;
     }
 
     newtree->Fill();
@@ -192,7 +191,7 @@ int main(int argc, char** argv)
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
   //std::string in_file_name=("../json/model4_300_dilepton_ELD.json");
-  std::string in_file_name=("../json/model4_300_singlelepton_ELD.json");
+  std::string in_file_name=("../json/model4_100_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
 
   if(!in_file){
@@ -202,8 +201,7 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // Where we read from:
   string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1/";
-  // string path = "/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v008/CR1/";
-  // string path = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v007/QE2/";
+  //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
   //string channels[] ={"ee","emu","mumu"};
    string channels[] ={"ejets"};
 
