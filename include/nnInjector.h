@@ -254,34 +254,58 @@ Double_t        event_norm;
 Double_t        event_lumi;
 
 // For those variables that need to be derived
-float m_jet_pt_1st_correct;
-float m_jet_pt_2nd_correct;
-float m_jet_pt_3rd_correct;
-float m_jet_pt_4th_correct;
-float m_jet_pt_5th_correct;
-float m_jet_pt_6th_correct;
+float jet_pt_1st_correct;
+float jet_pt_2nd_correct;
+float jet_pt_3rd_correct;
+float jet_pt_4th_correct;
+float jet_pt_5th_correct;
+float jet_pt_6th_correct;
 
-float m_jet_tagWeightBin_leading_correct;
-float m_jet_tagWeightBin_subleading_correct;
-float m_jet_tagWeightBin_subsubleading_correct;
+float jet_tagWeightBin_leading_correct;
+float jet_tagWeightBin_subleading_correct;
+float jet_tagWeightBin_subsubleading_correct;
 
-float m_ph_mgammalept_sel;
-float m_ph_drsubljet_sel;
-float m_ph_drlept_sel;
-float m_ph_e_sel;
-float m_ph_phi_sel;
-float m_ph_drleadjet_sel;
-float m_ph_mgammaleptlept_sel;
-float m_ph_HFT_MVA_sel;
-float m_ph_isoFCT_sel;
+float ph_mgammalept_sel;
+float ph_drsubljet_sel;
+float ph_drlept_sel;
+float ph_e_sel;
+float ph_phi_sel;
+float ph_drleadjet_sel;
+float ph_mgammaleptlept_sel;
+float ph_HFT_MVA_sel;
+float ph_isoFCT_sel;
 
-float m_ph_SF_iso_sel;
-float m_ph_SF_eff_sel;
+float ph_SF_iso_sel;
+float ph_SF_eff_sel;
 
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
+
+	SETBRANCH(ph_mgammalept_sel);
+	SETBRANCH(ph_drsubljet_sel);
+	SETBRANCH(ph_drlept_sel);
+	SETBRANCH(ph_e_sel);
+	SETBRANCH(ph_phi_sel);
+	SETBRANCH(ph_drleadjet_sel);
+	SETBRANCH(ph_mgammaleptlept_sel);
+	SETBRANCH(ph_HFT_MVA_sel);
+	SETBRANCH(ph_isoFCT_sel);
+	SETBRANCH(ph_SF_iso_sel);
+	SETBRANCH(ph_SF_eff_sel);
+
+	SETBRANCH(jet_tagWeightBin_leading_correct);
+	SETBRANCH(jet_tagWeightBin_subleading_correct);
+	SETBRANCH(jet_tagWeightBin_subsubleading_correct);
+
+	SETBRANCH(jet_pt_1st_correct); 
+	SETBRANCH(jet_pt_2nd_correct);
+	SETBRANCH(jet_pt_3rd_correct);
+	SETBRANCH(jet_pt_4th_correct);
+	SETBRANCH(jet_pt_5th_correct);
+	SETBRANCH(jet_pt_6th_correct);
+
 
 	SETBRANCH(weight_mm_ejets);
 	SETBRANCH(weight_mm_mujets);
