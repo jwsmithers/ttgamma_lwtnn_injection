@@ -1,3 +1,4 @@
+./nnInjector 3610XX.VV.p2952.v009.001.root
 ./nnInjector 3641XX.Wenu.p2952.v009.001.root
 ./nnInjector 3641XX.Wmunu.p2952.v009.001.root
 ./nnInjector 3641XX.Wtaunu.p2952.v009.001.root
@@ -16,6 +17,8 @@
 ./nnInjector 410225.ttbar_nonallhad_P8_AF.p2952.v009.001.root
 ./nnInjector 410389.ttgamma_nonallhadronic.p3152.v009.001.root
 ./nnInjector 410501.ttbar_nonallhad_P8_97pc.p3138.v009.001.root
+./nnInjector 410501.ttbar_nonallhad_P8_AF.p3138.v009.001.root
+./nnInjector 410501.ttbar_nonallhad_P8_AF.p3138.v009.002.root
 ./nnInjector 410511.ttbar_nonallhad_P8_AF.p2952.v009.001.root
 ./nnInjector 410512.ttbar_nonallhad_P8_AF.p2952.v009.001.root
 ./nnInjector 410525.ttbar_nonallhad_P8_AF.p2952.v009.001.root

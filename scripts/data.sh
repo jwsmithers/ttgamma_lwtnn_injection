@@ -1,0 +1,16 @@
+./nnInjector data15periodD.p2950.v009.001.root
+./nnInjector data15periodE.p2950.v009.001.root
+./nnInjector data15periodF.p2950.v009.001.root
+./nnInjector data15periodG.p2950.v009.001.root
+./nnInjector data15periodH.p2950.v009.001.root
+./nnInjector data15periodJ.p2950.v009.001.root
+./nnInjector data16periodA.p2950.v009.001.root
+./nnInjector data16periodB.p2950.v009.001.root
+./nnInjector data16periodC.p2950.v009.001.root
+./nnInjector data16periodD.p2950.v009.001.root
+./nnInjector data16periodE.p2950.v009.001.root
+./nnInjector data16periodF.p2950.v009.001.root
+./nnInjector data16periodG.p2950.v009.001.root
+./nnInjector data16periodI.p2950.v009.001.root
+./nnInjector data16periodK.p2950.v009.001.root
+./nnInjector data16periodL.p2950.v009.001.root
