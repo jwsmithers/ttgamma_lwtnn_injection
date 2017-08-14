@@ -15,47 +15,47 @@ void m_nan_cleaner_upper(vector<float> *variable){
 }
 
 void m_add_branches(
-  TChain *fChain, 
-  TTree *newtree,
+  TChain *fChain_func, 
+  TTree *newT,
   lwt::LightweightNeuralNetwork *neuralNet){
 
-  int nentries = fChain->GetEntries();
+  int nentries = fChain_func->GetEntries();
 
-  std::cout<< nentries << " entries" << std::endl;
+  std::cout<< nentries << " fchain add_branch entries" << std::endl;
 
-  newtree->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
-  newtree->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
-  newtree->Branch("jet_pt_3rd_correct",&m_jet_pt_3rd_correct);   
-  newtree->Branch("jet_pt_4th_correct",&m_jet_pt_4th_correct);   
-  newtree->Branch("jet_pt_5th_correct",&m_jet_pt_5th_correct);   
-  newtree->Branch("jet_pt_6th_correct",&m_jet_pt_6th_correct);   
+  newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
+  newT->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
+  newT->Branch("jet_pt_3rd_correct",&m_jet_pt_3rd_correct);   
+  newT->Branch("jet_pt_4th_correct",&m_jet_pt_4th_correct);   
+  newT->Branch("jet_pt_5th_correct",&m_jet_pt_5th_correct);   
+  newT->Branch("jet_pt_6th_correct",&m_jet_pt_6th_correct);   
 
-  newtree->Branch("ph_drsubljet_sel",&m_ph_drsubljet_sel);   
-  newtree->Branch("ph_drlept_sel",&m_ph_drlept_sel);   
-  newtree->Branch("ph_e_sel",&m_ph_e_sel);   
-  newtree->Branch("ph_phi_sel",&m_ph_phi_sel);   
-  newtree->Branch("ph_drleadjet_sel",&m_ph_drleadjet_sel);   
-  newtree->Branch("ph_mgammalept_sel",&m_ph_mgammalept_sel);   
-  newtree->Branch("ph_mgammaleptlept_sel",&m_ph_mgammaleptlept_sel);   
-  newtree->Branch("ph_HFT_MVA_sel",&m_ph_HFT_MVA_sel);   
-  newtree->Branch("ph_isoFCT_sel",&m_ph_isoFCT_sel);   
+  newT->Branch("ph_drsubljet_sel",&m_ph_drsubljet_sel);   
+  newT->Branch("ph_drlept_sel",&m_ph_drlept_sel);   
+  newT->Branch("ph_e_sel",&m_ph_e_sel);   
+  newT->Branch("ph_phi_sel",&m_ph_phi_sel);   
+  newT->Branch("ph_drleadjet_sel",&m_ph_drleadjet_sel);   
+  newT->Branch("ph_mgammalept_sel",&m_ph_mgammalept_sel);   
+  newT->Branch("ph_mgammaleptlept_sel",&m_ph_mgammaleptlept_sel);   
+  newT->Branch("ph_HFT_MVA_sel",&m_ph_HFT_MVA_sel);   
+  newT->Branch("ph_isoFCT_sel",&m_ph_isoFCT_sel);   
 
-  newtree->Branch("jet_tagWeightBin_leading_correct",&m_jet_tagWeightBin_leading_correct);   
-  newtree->Branch("jet_tagWeightBin_subleading_correct",&m_jet_tagWeightBin_subleading_correct);   
-  newtree->Branch("jet_tagWeightBin_subsubleading_correct",&m_jet_tagWeightBin_subsubleading_correct);   
+  newT->Branch("jet_tagWeightBin_leading_correct",&m_jet_tagWeightBin_leading_correct);   
+  newT->Branch("jet_tagWeightBin_subleading_correct",&m_jet_tagWeightBin_subleading_correct);   
+  newT->Branch("jet_tagWeightBin_subsubleading_correct",&m_jet_tagWeightBin_subsubleading_correct);   
 
-  newtree->Branch("ph_SF_eff_sel",&m_ph_SF_eff_sel);   
-  newtree->Branch("ph_SF_iso_sel",&m_ph_SF_iso_sel);   
+  newT->Branch("ph_SF_eff_sel",&m_ph_SF_eff_sel);   
+  newT->Branch("ph_SF_iso_sel",&m_ph_SF_iso_sel);   
 
-  newtree->Branch("event_ELD_MVA_all_correct","vector<float>",&m_event_ELD_MVA_all_correct);   
-  newtree->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
+  newT->Branch("event_ELD_MVA_all_correct","vector<float>",&m_event_ELD_MVA_all_correct);   
+  newT->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
 
 
-  activateBranches(fChain);
+  activateBranches(fChain_func);
 
   for (int event = 0; event < nentries; event++) {
 
-    fChain->GetEntry(event);
+    fChain_func->GetEntry(event);
     loadBar(event, nentries, 100, 50);
     
     // Get certain jets 
@@ -178,7 +178,7 @@ void m_add_branches(
       m_event_ELD_MVA_correct = m_event_ELD_MVA_all_correct->at(selph_index1);
     }
 
-    newtree->Fill();
+    newT->Fill();
 
 
   }// end event loop
@@ -207,16 +207,9 @@ int main(int argc, char** argv)
   //string channels[] ={"mujets"};
 
   // Where we save to:
-  string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
+  //string myPath = "root://eosuser//eos/user/j/jwsmith2/reprocessedNtuples/v009_flattened/CR1S/";
+  string myPath = "root://eosuser//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
   //string myPath = "../CR1/";
-
-  TFile *newfile;
-  TFile *oldFile;
-  TTree *newtree;
-  TTree *newtree_nominal;
-  TChain *fChain;
-  TChain *fChain_nominal;
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
@@ -224,8 +217,15 @@ int main(int argc, char** argv)
   m_neuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile->inputs, 
   m_config_netFile->layers, m_config_netFile->outputs);
 
+
   for (int i = 1; i < argc; ++i) {
     for(const string &c : channels){
+
+      TFile *newfile=nullptr;
+      TFile *oldFile=nullptr;
+      TTree *newtree_nominal=nullptr;
+      TChain *fChain_nominal=nullptr;
+
 
       string filename = argv[i];
       string file = path+c+"/"+filename;
@@ -257,7 +257,9 @@ int main(int argc, char** argv)
 
       newfile->cd();
       newtree_nominal->Write();
-      //
+      delete newtree_nominal;
+      delete fChain_nominal;
+      
 
       oldFile = new TFile((file.c_str()), "read");
 
@@ -270,6 +272,9 @@ int main(int argc, char** argv)
           
       while ( key = (TKey*)next() ) {
 
+	TChain *fChain=nullptr;
+        TTree *newtree=nullptr;
+
         obj = key->ReadObj() ;
         if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (strcmp("sumWeights",obj->GetName()) == 0) 
           || (strcmp("nominal",obj->GetName()) == 0) ) {
@@ -279,23 +284,29 @@ int main(int argc, char** argv)
         printf("Currently working on %s \n",obj->GetName());
         printf("#####################################\n");
 
-        newfile = new TFile((newpath.c_str()), "update");
         fChain = new TChain(obj->GetName());
    
         fChain->Add((file).c_str());
 
-        newtree = fChain->CloneTree(0);
-        if(fChain->GetEntries() == 0){
-          std::cout<<"No events, skipping"<<std::endl;
-          continue;
-        }
+        newtree = fChain->CloneTree(0); // We get 0 entries here, because we fill it later
+       if(fChain->GetEntries() == 0){
+         std::cout<<"No events, skipping"<<std::endl;
+         continue;
+       }
         m_add_branches(fChain,newtree,m_neuralNet);
+  int nentries_ = newtree->GetEntries();
+
+  std::cout<< nentries_ << " newtree entries" << std::endl;
 
         newfile->cd();
         newtree->Write();
-        newfile->Close();
+
+        delete newtree;
+        delete fChain;
 
       } // end loop over trees
+      delete newfile;
+      delete oldFile;
     } // end  loop over channels
   } // end loop over files
 
