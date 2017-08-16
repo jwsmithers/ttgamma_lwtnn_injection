@@ -21,7 +21,7 @@ void m_add_branches(
 
   int nentries = fChain_func->GetEntries();
 
-  std::cout<< nentries << " fchain add_branch entries" << std::endl;
+  std::cout<< nentries << " entries" << std::endl;
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
   newT->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
@@ -57,6 +57,13 @@ void m_add_branches(
 
     fChain_func->GetEntry(event);
     loadBar(event, nentries, 100, 50);
+
+    m_jet_pt_1st_correct=0;
+    m_jet_pt_2nd_correct=0;
+    m_jet_pt_3rd_correct=0;
+    m_jet_pt_4th_correct=0;
+    m_jet_pt_5th_correct=0;
+    m_jet_pt_6th_correct=0;
     
     // Get certain jets 
     for(uint jetn = 0; jetn < jet_pt->size();jetn++){
@@ -93,6 +100,10 @@ void m_add_branches(
     }
 
     // Sort btag weigths and add to mbranch // 
+    m_jet_tagWeightBin_leading_correct=-2;
+    m_jet_tagWeightBin_subleading_correct=-2;
+    m_jet_tagWeightBin_subsubleading_correct=-2;
+
 
     std::sort (jet_tagWeightBin->begin(), jet_tagWeightBin->end(), std::greater<int>()); 
 
@@ -190,8 +201,8 @@ int main(int argc, char** argv)
 {
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name=("model4_300_dilepton_ELD.json");
-  //std::string in_file_name=("model4_100_singlelepton_ELD.json");
+  //std::string in_file_name=("model4_300_dilepton_ELD.json");
+  std::string in_file_name=("model4_150_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
 
   if(!in_file){
@@ -200,20 +211,20 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
-  //string path = "/eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
-  //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
-  string channels[] ={"ee","emu","mumu"};
-  //string channels[] ={"mujets"};
+  //string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
+  string path = "/eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
+  //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
+  //string channels[] ={"emu","mumu"};
+  string channels[] ={"ejets","mujets"};
 
   // Where we save to:
-  //string myPath = "root://eosuser//eos/user/j/jwsmith2/reprocessedNtuples/v009_flattened/CR1S/";
-  string myPath = "root://eosuser//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
+  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/QE2/";
+  string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
   //string myPath = "../CR1/";
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
-  std::cout << ": NN has " << m_config_netFile->layers.size() << " layers"<< std::endl;
+  std::cout << ": "<<in_file_name << " has " << m_config_netFile->layers.size() << " layers"<< std::endl;
   m_neuralNet = new lwt::LightweightNeuralNetwork(m_config_netFile->inputs, 
   m_config_netFile->layers, m_config_netFile->outputs);
 
@@ -229,6 +240,7 @@ int main(int argc, char** argv)
 
       string filename = argv[i];
       string file = path+c+"/"+filename;
+      std::cout<<c<<": Reading from "<<path<< std::endl;
       string newpath = myPath + c+"/"+filename;
       std::cout<<c<<": "<< filename<< std::endl;
       std::cout<<c<<": Saving to "<<newpath<< std::endl;
@@ -263,6 +275,7 @@ int main(int argc, char** argv)
 
       oldFile = new TFile((file.c_str()), "read");
 
+
       // Do a loop over all trees that are not nominal
       TList* list = oldFile->GetListOfKeys() ;
       if (!list) { printf("<E> No keys found in file\n") ; exit(1) ; }
@@ -270,14 +283,14 @@ int main(int argc, char** argv)
       TKey* key ;
       TObject* obj ;
           
-      while ( key = (TKey*)next() ) {
+      while ( (key = (TKey*)next()) ) {
 
 	TChain *fChain=nullptr;
         TTree *newtree=nullptr;
 
         obj = key->ReadObj() ;
         if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (strcmp("sumWeights",obj->GetName()) == 0) 
-          || (strcmp("nominal",obj->GetName()) == 0) ) {
+          || (strcmp("nominal",obj->GetName()) == 0) || (strcmp("nominal_Loose",obj->GetName()) == 0)) {
           printf("Not running over: %s \n",obj->GetName()); continue; 
         }
         printf("#####################################\n");
@@ -294,9 +307,6 @@ int main(int argc, char** argv)
          continue;
        }
         m_add_branches(fChain,newtree,m_neuralNet);
-  int nentries_ = newtree->GetEntries();
-
-  std::cout<< nentries_ << " newtree entries" << std::endl;
 
         newfile->cd();
         newtree->Write();

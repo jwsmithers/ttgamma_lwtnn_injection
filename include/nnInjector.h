@@ -28,6 +28,7 @@
 #include <memory>
 #include <typeinfo>
 #include "TGraph.h"
+#include "TLeaf.h"
 #include "lwtnn/NNLayerConfig.hh"
 #include "lwtnn/LightweightNeuralNetwork.hh"
 #include "lwtnn/parse_json.hh"
@@ -261,9 +262,9 @@ float m_jet_pt_4th_correct;
 float m_jet_pt_5th_correct;
 float m_jet_pt_6th_correct;
 
-float m_jet_tagWeightBin_leading_correct;
-float m_jet_tagWeightBin_subleading_correct;
-float m_jet_tagWeightBin_subsubleading_correct;
+int m_jet_tagWeightBin_leading_correct;
+int m_jet_tagWeightBin_subleading_correct;
+int m_jet_tagWeightBin_subsubleading_correct;
 
 float m_ph_mgammalept_sel;
 float m_ph_drsubljet_sel;
