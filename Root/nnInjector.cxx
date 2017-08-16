@@ -215,7 +215,7 @@ int main(int argc, char** argv)
   string path = "/eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
   //string channels[] ={"emu","mumu"};
-  string channels[] ={"ejets","mujets"};
+  string channels[] ={"mujets"};
 
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/QE2/";
@@ -283,8 +283,16 @@ int main(int argc, char** argv)
       TKey* key ;
       TObject* obj ;
           
+
+      std::string oldkeyname;
       while ( (key = (TKey*)next()) ) {
 
+        bool alreadyseen = (oldkeyname == key->GetName());
+
+        if (alreadyseen){
+	continue;
+	}
+	oldkeyname = key->GetName();
 	TChain *fChain=nullptr;
         TTree *newtree=nullptr;
 
