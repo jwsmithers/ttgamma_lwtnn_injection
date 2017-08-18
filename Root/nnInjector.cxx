@@ -201,8 +201,8 @@ int main(int argc, char** argv)
 {
   gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  //std::string in_file_name=("model4_300_dilepton_ELD.json");
-  std::string in_file_name=("model4_150_singlelepton_ELD.json");
+  std::string in_file_name=("model4_300_dilepton_ELD.json");
+  // std::string in_file_name=("model4_150_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
 
   if(!in_file){
@@ -212,14 +212,14 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // Where we read from:
   //string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
-  string path = "/eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
+  string path = "root://eosuser//eos/user/c/caudron/TtGamma_ntuples/v009/CR1S/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
-  //string channels[] ={"emu","mumu"};
-  string channels[] ={"mujets"};
+  string channels[] ={"ee","emu","mumu"};
+  // string channels[] ={"mujets"};
 
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/QE2/";
-  string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
+  string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1/";
   //string myPath = "../CR1/";
 
 
@@ -290,10 +290,10 @@ int main(int argc, char** argv)
         bool alreadyseen = (oldkeyname == key->GetName());
 
         if (alreadyseen){
-	continue;
-	}
-	oldkeyname = key->GetName();
-	TChain *fChain=nullptr;
+        	continue;
+      	}
+      	oldkeyname = key->GetName();
+      	TChain *fChain=nullptr;
         TTree *newtree=nullptr;
 
         obj = key->ReadObj() ;
