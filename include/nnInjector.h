@@ -279,6 +279,12 @@ float m_ph_isoFCT_sel;
 float m_ph_SF_iso_sel;
 float m_ph_SF_eff_sel;
 
+// PPT systematics
+bool ppt_systematics_applied = false;
+Float_t   m_weight_PPT_hfake=0;
+Float_t   m_weight_PPT_prompt=0;
+TH1F* _ppt_prompt=nullptr;
+TH1F* _ppt_hfake=nullptr;
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
