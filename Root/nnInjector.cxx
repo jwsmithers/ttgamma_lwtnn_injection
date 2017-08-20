@@ -18,12 +18,14 @@ void m_add_ppt_systematics(
   // Get the two ratio plots
   TH1F* ppt_prompt = (TH1F*)syst->Get("ratio_ph_HFT_MVA_dilepton_ppt_Data_h_tot_nosyst");
   TH1F* ppt_hfake = (TH1F*)syst->Get("ratio_ph_HFT_MVA_singlelepton_ppt_Data_h_tot_nosyst");
+
   // Save them
   file->cd();
   ppt_hfake->Draw();
   ppt_hfake->Fit("pol1");
   ppt_hfake->Write();
   std::cout<<"Added hfake PPT syst..."<<std::endl;
+
   ppt_prompt->Draw();
   ppt_prompt->Fit("pol1");
   ppt_prompt->Write();
@@ -196,6 +198,19 @@ void m_add_branches(
         //std::cout<<"MVA all = "<< out.second << std::endl;
         m_event_ELD_MVA_all_correct->at(photon) = out.second;
       }
+
+
+    // How we handle weights
+    if(ppt_systematics_applied){
+    float PPT_x_value = ph_HFT_MVA->at(photon);
+
+    TF1 *_ppt_hfake_fit = (TF1*)_ppt_hfake->GetFunction("pol1");
+    m_weight_PPT_hfake = _ppt_hfake_fit->Eval(PPT_x_value);
+
+    TF1 *_ppt_prompt_fit = (TF1*)_ppt_prompt->GetFunction("pol1");
+    m_weight_PPT_prompt = _ppt_prompt_fit->Eval(PPT_x_value);
+    }
+
     } // end loop over photons
 
       // Save good photons
@@ -216,16 +231,9 @@ void m_add_branches(
     }
 
 
-    // How we handle weights
-    if(ppt_systematics_applied){
-    float PPT_x_value = ph_HFT_MVA->at(0);
-    m_weight_PPT_prompt = _ppt_prompt->GetBinContent(2);
-    m_weight_PPT_hfake = _ppt_hfake->GetBinContent(2);
-    } 
-
-
     newT->Fill();
-
+    delete _ppt_hfake_fit;
+    delete _ppt_prompt_fit;
 
   }// end event loop
 
@@ -278,7 +286,11 @@ int main(int argc, char** argv)
       std::cout<<c<<": Saving to "<<newpath<< std::endl;
 
       newfile = new TFile((newpath.c_str()), "recreate");
-      m_add_ppt_systematics(newfile,"weight_PPT.root");
+      // If singlelepton, add PPT systs. If not, defualt value is 1
+      if ( (c.find("ejets") != std::string::npos) ||
+           (c.find("mujets") != std::string::npos) ){
+        m_add_ppt_systematics(newfile,"weight_PPT.root");
+      }
 
       oldFile = new TFile((file.c_str()), "read");
 
