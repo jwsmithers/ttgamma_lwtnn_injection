@@ -21,6 +21,7 @@
 #include <TChainElement.h>
 #include "TH1D.h"
 #include "TH1F.h"
+#include "TF1.h"
 #include "TSystemDirectory.h"
 #include "TSystemFile.h"
 #include <sstream>
@@ -279,6 +280,14 @@ float m_ph_isoFCT_sel;
 float m_ph_SF_iso_sel;
 float m_ph_SF_eff_sel;
 
+// PPT systematics
+bool ppt_systematics_applied = false;
+Float_t   m_weight_PPT_hfake=1;
+Float_t   m_weight_PPT_prompt=1;
+TH1F* _ppt_prompt=nullptr;
+TH1F* _ppt_hfake=nullptr;
+TF1* _ppt_hfake_fit=nullptr;
+TF1* _ppt_prompt_fit=nullptr;
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
