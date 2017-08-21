@@ -209,7 +209,10 @@ void m_add_branches(
 
     TF1 *_ppt_prompt_fit = (TF1*)_ppt_prompt->GetFunction("pol1");
     m_weight_PPT_prompt = _ppt_prompt_fit->Eval(PPT_x_value);
+
     }
+    delete _ppt_hfake_fit;
+    delete _ppt_prompt_fit;
 
     } // end loop over photons
 
@@ -232,8 +235,7 @@ void m_add_branches(
 
 
     newT->Fill();
-    delete _ppt_hfake_fit;
-    delete _ppt_prompt_fit;
+
 
   }// end event loop
 
@@ -244,8 +246,8 @@ int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  std::string in_file_name=("model4_300_dilepton_ELD.json");
-  // std::string in_file_name=("model4_150_singlelepton_ELD.json");
+  //std::string in_file_name=("model4_300_dilepton_ELD.json");
+  std::string in_file_name=("model4_150_singlelepton_ELD.json");
   std::ifstream in_file(in_file_name);
 
   if(!in_file){
@@ -257,12 +259,11 @@ int main(int argc, char** argv)
   string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009/CR1S/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
   //string channels[] ={"ee","emu","mumu"};
-  string channels[] ={"emu"};
+  string channels[] ={"ejets"};
 
   // Where we save to:
   //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/QE2/";
-  // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  string myPath = "CR1/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009_flattened/CR1S/";
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
@@ -286,6 +287,7 @@ int main(int argc, char** argv)
       std::cout<<c<<": Saving to "<<newpath<< std::endl;
 
       newfile = new TFile((newpath.c_str()), "recreate");
+
       // If singlelepton, add PPT systs. If not, defualt value is 1
       if ( (c.find("ejets") != std::string::npos) ||
            (c.find("mujets") != std::string::npos) ){
@@ -312,7 +314,6 @@ int main(int argc, char** argv)
       	}
       	oldkeyname = key->GetName();
       	TChain *fChain=nullptr;
-        gROOT->cd();// This is needed for some stupid root reason
         TTree *newtree=nullptr;
 
         obj = key->ReadObj() ;
@@ -326,12 +327,10 @@ int main(int argc, char** argv)
         fChain = new TChain(obj->GetName());
    
         fChain->Add((file).c_str());
-
+        newfile->cd(); // Make sure we are in new file otherwise shit breaks.
         newtree = fChain->CloneTree(0); // We get 0 entries here, because we fill it later
        if(fChain->GetEntries() == 0){
          std::cout<<"No events, skipping"<<std::endl;
-         newfile->cd();
-         newtree->Write();
          delete newtree;
          delete fChain;
          continue;
