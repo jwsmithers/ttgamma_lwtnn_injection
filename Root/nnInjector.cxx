@@ -16,8 +16,10 @@ void m_add_ppt_systematics(
   if ( syst->IsOpen() ) std::cout << source << " file opened successfully" 
     << std::endl;
   // Get the two ratio plots
-  TH1F* ppt_prompt = (TH1F*)syst->Get("ratio_ph_HFT_MVA_dilepton_ppt_Data_h_tot_nosyst");
-  TH1F* ppt_hfake = (TH1F*)syst->Get("ratio_ph_HFT_MVA_singlelepton_ppt_Data_h_tot_nosyst");
+  TH1F* ppt_prompt = (TH1F*)syst->Get("weight_PPT_prompt_ee"); //It's ee, emu and mumu
+  ppt_prompt->SetName("weight_PPT_prompt_histo");
+  TH1F* ppt_hfake = (TH1F*)syst->Get("weight_PPT_fake_ejets");//It's ejets and mujets
+  ppt_hfake->SetName("weight_PPT_hfake_histo");
 
   // Save them
   file->cd();
@@ -44,11 +46,13 @@ void m_add_branches(
 
   std::cout<< nentries << " entries" << std::endl;
 
-  newT->Branch("weight_PPT_hfake",&m_weight_PPT_hfake);
-  newT->Branch("weight_PPT_prompt",&m_weight_PPT_prompt);
+  newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
+  newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
+  newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
+  newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
   if(ppt_systematics_applied){
-    _ppt_prompt = (TH1F*)file->Get("ratio_ph_HFT_MVA_dilepton_ppt_Data_h_tot_nosyst");
-    _ppt_hfake = (TH1F*)file->Get("ratio_ph_HFT_MVA_singlelepton_ppt_Data_h_tot_nosyst");
+    _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
+    _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
   }
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
@@ -200,15 +204,23 @@ void m_add_branches(
       }
 
 
-    // How we handle weights
+    // How we handle PPT weights
     if(ppt_systematics_applied){
     float PPT_x_value = ph_HFT_MVA->at(photon);
 
+    // Prompt derive fit weight
     TF1 *_ppt_hfake_fit = (TF1*)_ppt_hfake->GetFunction("pol1");
-    m_weight_PPT_hfake = _ppt_hfake_fit->Eval(PPT_x_value);
+    m_weight_PPT_hfake_fit = _ppt_hfake_fit->Eval(PPT_x_value);
+    // Prompt derive bin weight
+    int hfake_bin_number = _ppt_hfake->GetXaxis()->FindBin(PPT_x_value);
+    m_weight_PPT_hfake_bin = _ppt_hfake->GetBinContent(hfake_bin_number);
 
+    // Prompt derive fit weight
     TF1 *_ppt_prompt_fit = (TF1*)_ppt_prompt->GetFunction("pol1");
-    m_weight_PPT_prompt = _ppt_prompt_fit->Eval(PPT_x_value);
+    m_weight_PPT_prompt_fit = _ppt_prompt_fit->Eval(PPT_x_value);
+    // Prompt derive bin weight
+    int promt_bin_number = _ppt_prompt->GetXaxis()->FindBin(PPT_x_value);
+    m_weight_PPT_prompt_bin = _ppt_prompt->GetBinContent(promt_bin_number);
 
     }
     delete _ppt_hfake_fit;
@@ -256,14 +268,15 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009/CR1S/";
+  // string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009/CR1S/";
+  string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/SR1/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
   //string channels[] ={"ee","emu","mumu"};
-  string channels[] ={"ejets"};
+  string channels[] ={"mujets"};
 
   // Where we save to:
-  //string myPath = "/eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/QE2/";
-  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009_flattened/CR1S/";
+  // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
+  string myPath = "./CR1S/";
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
@@ -291,7 +304,7 @@ int main(int argc, char** argv)
       // If singlelepton, add PPT systs. If not, defualt value is 1
       if ( (c.find("ejets") != std::string::npos) ||
            (c.find("mujets") != std::string::npos) ){
-        m_add_ppt_systematics(newfile,"weight_PPT.root");
+        m_add_ppt_systematics(newfile,"weights_PPT-2017-08-22-1.root");
       }
 
       oldFile = new TFile((file.c_str()), "read");

@@ -282,8 +282,10 @@ float m_ph_SF_eff_sel;
 
 // PPT systematics
 bool ppt_systematics_applied = false;
-Float_t   m_weight_PPT_hfake=1;
-Float_t   m_weight_PPT_prompt=1;
+Float_t   m_weight_PPT_hfake_fit=1;
+Float_t   m_weight_PPT_prompt_fit=1;
+Float_t   m_weight_PPT_hfake_bin=1;
+Float_t   m_weight_PPT_prompt_bin=1;
 TH1F* _ppt_prompt=nullptr;
 TH1F* _ppt_hfake=nullptr;
 TF1* _ppt_hfake_fit=nullptr;
