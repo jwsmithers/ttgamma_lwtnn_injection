@@ -208,10 +208,10 @@ void m_add_branches(
     if(ppt_systematics_applied){
     float PPT_x_value = ph_HFT_MVA->at(photon);
 
-    // Prompt derive fit weight
+    // Hfake derive fit weight
     TF1 *_ppt_hfake_fit = (TF1*)_ppt_hfake->GetFunction("pol1");
     m_weight_PPT_hfake_fit = _ppt_hfake_fit->Eval(PPT_x_value);
-    // Prompt derive bin weight
+    // Hfake derive bin weight
     int hfake_bin_number = _ppt_hfake->GetXaxis()->FindBin(PPT_x_value);
     m_weight_PPT_hfake_bin = _ppt_hfake->GetBinContent(hfake_bin_number);
 
