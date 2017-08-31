@@ -3,7 +3,7 @@ alias setupATLAS='source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh'
 
 setupATLAS -q
 
-lsetup "cmake 3.6.0"
+lsetup "cmake 3.7.0"
 
 lsetup "lcgenv -p LCG_88 x86_64-slc6-gcc49-opt ROOT"
 #lsetup "root 6.10.02-x86_64-slc6-gcc62-opt"
