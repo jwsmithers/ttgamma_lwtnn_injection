@@ -46,14 +46,14 @@ void m_add_branches(
 
   std::cout<< nentries << " entries" << std::endl;
 
-  newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
-  newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
-  newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
-  newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
-  if(ppt_systematics_applied){
-    _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
-    _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
-  }
+  //newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
+  //newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
+  //newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
+  //newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
+  //if(ppt_systematics_applied){
+  //  _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
+  //  _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
+  //}
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
   newT->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
@@ -62,22 +62,9 @@ void m_add_branches(
   newT->Branch("jet_pt_5th_correct",&m_jet_pt_5th_correct);   
   newT->Branch("jet_pt_6th_correct",&m_jet_pt_6th_correct);   
 
-  newT->Branch("ph_drsubljet_sel",&m_ph_drsubljet_sel);   
-  newT->Branch("ph_drlept_sel",&m_ph_drlept_sel);   
-  newT->Branch("ph_e_sel",&m_ph_e_sel);   
-  newT->Branch("ph_phi_sel",&m_ph_phi_sel);   
-  newT->Branch("ph_drleadjet_sel",&m_ph_drleadjet_sel);   
-  newT->Branch("ph_mgammalept_sel",&m_ph_mgammalept_sel);   
-  newT->Branch("ph_mgammaleptlept_sel",&m_ph_mgammaleptlept_sel);   
-  newT->Branch("ph_HFT_MVA_sel",&m_ph_HFT_MVA_sel);   
-  newT->Branch("ph_isoFCT_sel",&m_ph_isoFCT_sel);   
-
   newT->Branch("jet_tagWeightBin_leading_correct",&m_jet_tagWeightBin_leading_correct);   
   newT->Branch("jet_tagWeightBin_subleading_correct",&m_jet_tagWeightBin_subleading_correct);   
   newT->Branch("jet_tagWeightBin_subsubleading_correct",&m_jet_tagWeightBin_subsubleading_correct);   
-
-  newT->Branch("ph_SF_eff_sel",&m_ph_SF_eff_sel);   
-  newT->Branch("ph_SF_iso_sel",&m_ph_SF_iso_sel);   
 
   newT->Branch("event_ELD_MVA_all_correct","vector<float>",&m_event_ELD_MVA_all_correct);   
   newT->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
@@ -228,20 +215,8 @@ void m_add_branches(
 
     } // end loop over photons
 
-      // Save good photons
+      // Save good photons in ELD as cross check
     if(selph_index1 >= 0) {
-      m_ph_drsubljet_sel = ph_drsubljet->at(selph_index1);
-      m_ph_drlept_sel = ph_drlept->at(selph_index1);
-      m_ph_e_sel = ph_e->at(selph_index1);
-      m_ph_phi_sel = ph_phi->at(selph_index1);
-      m_ph_drleadjet_sel = ph_drleadjet->at(selph_index1);
-      m_ph_mgammalept_sel = ph_mgammalept->at(selph_index1);
-      m_ph_mgammaleptlept_sel = ph_mgammaleptlept->at(selph_index1);
-      m_ph_HFT_MVA_sel = ph_HFT_MVA->at(selph_index1);
-      m_ph_isoFCT_sel = ph_isoFCT->at(selph_index1);
-      // Get good weights
-      m_ph_SF_eff_sel = ph_SF_eff->at(selph_index1);
-      m_ph_SF_iso_sel = ph_SF_iso->at(selph_index1);
       m_event_ELD_MVA_correct = m_event_ELD_MVA_all_correct->at(selph_index1);
     }
 
@@ -269,14 +244,14 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // Where we read from:
   // string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009/CR1S/";
-  string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/SR1/";
+  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
   //string channels[] ={"ee","emu","mumu"};
   string channels[] ={"mujets"};
 
   // Where we save to:
   // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  string myPath = "./CR1S/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_production/SR1S/";
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
@@ -301,11 +276,11 @@ int main(int argc, char** argv)
 
       newfile = new TFile((newpath.c_str()), "recreate");
 
-      // If singlelepton, add PPT systs. If not, defualt value is 1
-      if ( (c.find("ejets") != std::string::npos) ||
-           (c.find("mujets") != std::string::npos) ){
-        m_add_ppt_systematics(newfile,"weights_PPT-2017-08-22-1.root");
-      }
+      //// If singlelepton, add PPT systs. If not, defualt value is 1
+      //if ( (c.find("ejets") != std::string::npos) ||
+      //     (c.find("mujets") != std::string::npos) ){
+      //  m_add_ppt_systematics(newfile,"weights_PPT-2017-08-22-1.root");
+      //}
 
       oldFile = new TFile((file.c_str()), "read");
 
