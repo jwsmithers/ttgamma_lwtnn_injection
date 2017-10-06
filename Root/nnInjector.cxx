@@ -49,11 +49,11 @@ void m_add_kfactor(
     << std::endl;
 
   // Get the two kfactor plots
-  TH1F* h_sl = (TH1F*)_f_kfactor_sl->Get("kfactor_nlo_2mt_ph_var_pt");
-  h_sl->SetName("kfactor_nlo_2mt_ph_var_pt_SL");
+  TH1F* h_sl = (TH1F*)_f_kfactor_sl->Get("kfactor_nlo_mt_ph_pt_fine");
+  h_sl->SetName("kfactor_nlo_mt_ph_pt_fine_SL");
 
-  TH1F* h_dl = (TH1F*)_f_kfactor_dl->Get("kfactor_nlo_2mt_ph_var_pt");
-  h_dl->SetName("kfactor_nlo_2mt_ph_var_pt_DL");
+  TH1F* h_dl = (TH1F*)_f_kfactor_dl->Get("kfactor_nlo_mt_ph_pt_fine");
+  h_dl->SetName("kfactor_nlo_mt_ph_pt_fine_DL");
 
   // Save them
   file->cd();
@@ -89,8 +89,8 @@ void m_add_branches(
 
   newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_correct);
   if(kfactor_applied){
-    _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_2mt_ph_var_pt_SL");
-    _h_kfactor_dl = (TH1F*)file->Get("kfactor_nlo_2mt_ph_var_pt_DL");
+    _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_SL");
+    _h_kfactor_dl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_DL");
   }
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
@@ -353,8 +353,8 @@ int main(int argc, char** argv)
             is_dilepton=true;
         }
         m_add_kfactor(newfile,
-          "kfactor_sinlepton_2mt_diffBin.root",
-          "kfactor_dilepton_2mt_diffBin.root");
+          "kfactor_sinlepton_theory_fineBin.root",
+          "kfactor_dilepton_theory_fineBin.root");
       }
 
       oldFile = new TFile((file.c_str()), "read");
