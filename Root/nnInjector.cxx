@@ -36,6 +36,38 @@ void m_add_ppt_systematics(
   ppt_systematics_applied = true;
 }
 
+void m_add_kfactor(
+  TFile *file,
+  std::string source_sl, 
+  std::string source_dl){
+  // Open the kfactor file
+  TFile* _f_kfactor_sl = new TFile(source_sl.c_str(),"read");
+  if ( _f_kfactor_sl->IsOpen() ) std::cout << source_sl << " file opened successfully" 
+    << std::endl;
+  TFile* _f_kfactor_dl = new TFile(source_dl.c_str(),"read");
+  if ( _f_kfactor_dl->IsOpen() ) std::cout << source_dl << " file opened successfully" 
+    << std::endl;
+
+  // Get the two kfactor plots
+  TH1F* h_sl = (TH1F*)_f_kfactor_sl->Get("kfactor_nlo_2mt_ph_var_pt");
+  h_sl->SetName("kfactor_nlo_2mt_ph_var_pt_SL");
+
+  TH1F* h_dl = (TH1F*)_f_kfactor_dl->Get("kfactor_nlo_2mt_ph_var_pt");
+  h_dl->SetName("kfactor_nlo_2mt_ph_var_pt_DL");
+
+  // Save them
+  file->cd();
+  h_sl->Draw();
+  h_sl->Write();
+  std::cout<<"Added singlelepton kfactor..."<<std::endl;
+
+  h_dl->Draw();
+  h_dl->Write();
+  std::cout<<"Added dilepton kfactor..."<<std::endl;
+  // To be used later in eventloop
+  kfactor_applied = true;
+}
+
 void m_add_branches(
   TChain *fChain_func, 
   TTree *newT,
@@ -54,6 +86,12 @@ void m_add_branches(
   //  _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
   //  _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
   //}
+
+  newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_correct);
+  if(kfactor_applied){
+    _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_2mt_ph_var_pt_SL");
+    _h_kfactor_dl = (TH1F*)file->Get("kfactor_nlo_2mt_ph_var_pt_DL");
+  }
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
   newT->Branch("jet_pt_2nd_correct",&m_jet_pt_2nd_correct);   
@@ -145,6 +183,7 @@ void m_add_branches(
     }
 
     m_event_ELD_MVA_all_correct->resize(ph_pt->size());
+    m_ph_kfactor_correct->resize(ph_pt->size());
 
     for(int photon = 0 ; photon < ph_pt->size(); photon++){
       m_event_ELD_MVA_all_correct->at(photon)=-99;
@@ -212,6 +251,25 @@ void m_add_branches(
     }
     delete _ppt_hfake_fit;
     delete _ppt_prompt_fit;
+
+    // Add in the Kfactor weights
+    m_ph_kfactor_correct->at(photon)=1;
+    if(kfactor_applied){
+      float photon_pt = ph_pt->at(photon)*0.001;
+      if(is_singlelepton){
+        int kfactor_pt_bin_number = _h_kfactor_sl->GetXaxis()->FindBin(photon_pt);
+        if (photon_pt >= _h_kfactor_sl->GetXaxis()->GetXmax())
+          kfactor_pt_bin_number = _h_kfactor_sl->GetXaxis()->GetLast();
+        m_ph_kfactor_correct->at(photon) = _h_kfactor_sl->GetBinContent(kfactor_pt_bin_number);
+      }
+      if (is_dilepton){
+        int kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->FindBin(photon_pt);
+        if (photon_pt >= _h_kfactor_dl->GetXaxis()->GetXmax())
+          kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->GetLast();
+        m_ph_kfactor_correct->at(photon) = _h_kfactor_dl->GetBinContent(kfactor_pt_bin_number);
+      }
+    }
+
 
     } // end loop over photons
 
@@ -281,6 +339,23 @@ int main(int argc, char** argv)
       //     (c.find("mujets") != std::string::npos) ){
       //  m_add_ppt_systematics(newfile,"weights_PPT-2017-08-22-1.root");
       //}
+
+      // If ttgamma add the kfactors
+      if(filename.find("ttgamma") != std::string::npos){
+
+        if ( (c.find("ejets") != std::string::npos) ||
+            (c.find("mujets") != std::string::npos) ){
+            is_singlelepton=true;
+        }
+        else if ( (c.find("ee") != std::string::npos) ||
+            (c.find("mumu") != std::string::npos) ||
+            (c.find("emu") != std::string::npos) ){
+            is_dilepton=true;
+        }
+        m_add_kfactor(newfile,
+          "kfactor_sinlepton_2mt_diffBin.root",
+          "kfactor_dilepton_2mt_diffBin.root");
+      }
 
       oldFile = new TFile((file.c_str()), "read");
 

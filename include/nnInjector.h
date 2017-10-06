@@ -291,6 +291,15 @@ TH1F* _ppt_hfake=nullptr;
 TF1* _ppt_hfake_fit=nullptr;
 TF1* _ppt_prompt_fit=nullptr;
 
+// Kfactor
+bool kfactor_applied = false; 
+vector<float> *m_ph_kfactor_correct=nullptr;
+TH1F* _h_kfactor_sl=nullptr;
+TH1F* _h_kfactor_dl=nullptr;
+
+bool is_singlelepton=false;
+bool is_dilepton=false;
+
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
