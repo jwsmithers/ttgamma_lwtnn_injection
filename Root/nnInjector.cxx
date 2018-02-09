@@ -16,9 +16,9 @@ void m_add_ppt_systematics(
   if ( syst->IsOpen() ) std::cout << source << " file opened successfully" 
     << std::endl;
   // Get the two ratio plots
-  TH1F* ppt_prompt = (TH1F*)syst->Get("weight_PPT_prompt_ee"); //It's ee, emu and mumu
+  TH1F* ppt_prompt = (TH1F*)syst->Get("weight_PPT_prompt"); //It's ee, emu and mumu
   ppt_prompt->SetName("weight_PPT_prompt_histo");
-  TH1F* ppt_hfake = (TH1F*)syst->Get("weight_PPT_fake_ejets");//It's ejets and mujets
+  TH1F* ppt_hfake = (TH1F*)syst->Get("weight_PPT_fake");//It's ejets and mujets
   ppt_hfake->SetName("weight_PPT_hfake_histo");
 
   // Save them
@@ -68,6 +68,48 @@ void m_add_kfactor(
   kfactor_applied = true;
 }
 
+void m_add_efake_sf(
+  TFile *file,
+  std::string source){
+  // Open the efake file
+  TFile* _f_efake_sf_nominal = new TFile(source.c_str(),"read");
+  if ( _f_efake_sf_nominal->IsOpen() ) std::cout << source << " file opened successfully" 
+    << std::endl;
+
+  // Get the two efake plots
+  TH1F* h_efake_sf_Nominal = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Nominal");
+  TH1F* h_efake_sf_RangeDown = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_RangeDown");
+  TH1F* h_efake_sf_BkgFunc = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_BkgFunc");
+  TH1F* h_efake_sf_SigFunc = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_SigFunc");
+  TH1F* h_efake_sf_TypeC = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_TypeC");
+  TH1F* h_efake_sf_Stat_Pt2Eta4 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt2Eta4");
+  TH1F* h_efake_sf_Stat_Pt3Eta3 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt3Eta3");
+  TH1F* h_efake_sf_Stat_Pt4Eta1 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta1");
+  TH1F* h_efake_sf_Stat_Pt4Eta2 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta2");
+  TH1F* h_efake_sf_Stat_Pt4Eta3 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta3");
+  TH1F* h_efake_sf_Stat_Pt4Eta4 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta4");
+  TH1F* h_efake_sf_Total = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Total");
+
+  // Save them
+  file->cd();
+  h_efake_sf_Nominal->Draw(); h_efake_sf_Nominal->Write();
+  h_efake_sf_RangeDown->Draw(); h_efake_sf_RangeDown->Write();
+  h_efake_sf_BkgFunc->Draw(); h_efake_sf_BkgFunc->Write();
+  h_efake_sf_SigFunc->Draw(); h_efake_sf_SigFunc->Write();
+  h_efake_sf_TypeC->Draw(); h_efake_sf_TypeC->Write();
+  h_efake_sf_Stat_Pt2Eta4->Draw(); h_efake_sf_Stat_Pt2Eta4->Write();
+  h_efake_sf_Stat_Pt3Eta3->Draw(); h_efake_sf_Stat_Pt3Eta3->Write();
+  h_efake_sf_Stat_Pt4Eta1->Draw(); h_efake_sf_Stat_Pt4Eta1->Write();
+  h_efake_sf_Stat_Pt4Eta2->Draw(); h_efake_sf_Stat_Pt4Eta2->Write();
+  h_efake_sf_Stat_Pt4Eta3->Draw(); h_efake_sf_Stat_Pt4Eta3->Write();
+  h_efake_sf_Stat_Pt4Eta4->Draw(); h_efake_sf_Stat_Pt4Eta4->Write();
+  h_efake_sf_Total->Draw(); h_efake_sf_Total->Write();
+  std::cout<<"Added efake SFs..."<<std::endl;
+
+  // To be used later in eventloop
+  efake_sf_applied = true;
+}
+
 void m_add_branches(
   TChain *fChain_func, 
   TTree *newT,
@@ -78,19 +120,45 @@ void m_add_branches(
 
   std::cout<< nentries << " entries" << std::endl;
 
-  //newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
-  //newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
-  //newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
-  //newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
-  //if(ppt_systematics_applied){
-  //  _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
-  //  _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
-  //}
+  newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
+  newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
+  newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
+  newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
+  if(ppt_systematics_applied){
+    _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
+    _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
+  }
 
   newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_correct);
+  newT->Branch("efake_sf_Nominal","vector<float>",&m_efake_sf_Nominal);
+  newT->Branch("efake_sf_RangeDown","vector<float>",&m_efake_sf_RangeDown);
+  newT->Branch("efake_sf_BkgFunc","vector<float>",&m_efake_sf_BkgFunc);
+  newT->Branch("efake_sf_SigFunc","vector<float>",&m_efake_sf_SigFunc);
+  newT->Branch("efake_sf_TypeC","vector<float>",&m_efake_sf_TypeC);
+  newT->Branch("efake_sf_Stat_Pt2Eta4","vector<float>",&m_efake_sf_Stat_Pt2Eta4);
+  newT->Branch("efake_sf_Stat_Pt3Eta3","vector<float>",&m_efake_sf_Stat_Pt3Eta3);
+  newT->Branch("efake_sf_Stat_Pt4Eta1","vector<float>",&m_efake_sf_Stat_Pt4Eta1);
+  newT->Branch("efake_sf_Stat_Pt4Eta2","vector<float>",&m_efake_sf_Stat_Pt4Eta2);
+  newT->Branch("efake_sf_Stat_Pt4Eta3","vector<float>",&m_efake_sf_Stat_Pt4Eta3);
+  newT->Branch("efake_sf_Stat_Pt4Eta4","vector<float>",&m_efake_sf_Stat_Pt4Eta4);
+  newT->Branch("efake_sf_Total","vector<float>",&m_efake_sf_Total);
   if(kfactor_applied){
     _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_SL");
     _h_kfactor_dl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_DL");
+  }
+  if(efake_sf_applied){
+    _h_efake_sf_Nominal = (TH1F*)file->Get("Final_EFake_SF_Nominal");
+    _h_efake_sf_RangeDown = (TH1F*)file->Get("Final_EFake_SF_RangeDown");
+    _h_efake_sf_BkgFunc = (TH1F*)file->Get("Final_EFake_SF_BkgFunc");
+    _h_efake_sf_SigFunc = (TH1F*)file->Get("Final_EFake_SF_SigFunc");
+    _h_efake_sf_TypeC = (TH1F*)file->Get("Final_EFake_SF_TypeC");
+    _h_efake_sf_Stat_Pt2Eta4 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt2Eta4");
+    _h_efake_sf_Stat_Pt3Eta3 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt3Eta3");
+    _h_efake_sf_Stat_Pt4Eta1 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta1");
+    _h_efake_sf_Stat_Pt4Eta2 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta2");
+    _h_efake_sf_Stat_Pt4Eta3 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta3");
+    _h_efake_sf_Stat_Pt4Eta4 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta4");
+    _h_efake_sf_Total = (TH1F*)file->Get("Final_EFake_SF_Total");
   }
 
   newT->Branch("jet_pt_1st_correct",&m_jet_pt_1st_correct);   
@@ -107,6 +175,8 @@ void m_add_branches(
   newT->Branch("event_ELD_MVA_all_correct","vector<float>",&m_event_ELD_MVA_all_correct);   
   newT->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
 
+  newT->Branch("dPhi_lep",&m_dPhi_lep);   
+
 
   activateBranches(fChain_func);
 
@@ -114,6 +184,26 @@ void m_add_branches(
 
     fChain_func->GetEntry(event);
     loadBar(event, nentries, 100, 50);
+
+
+    // Add the lep delta phi variable
+    m_dPhi_lep=0;
+    TLorentzVector lep1;
+    TLorentzVector lep2;
+    if(is_ee){
+    lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0)); 
+    lep2.SetPtEtaPhiE(el_pt->at(1),el_eta->at(1),el_phi->at(1),el_e->at(1)); 
+    }
+    else if(is_emu){
+    lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0));
+    lep2.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
+    }
+    else if(is_mumu){
+    lep1.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
+    lep2.SetPtEtaPhiE(mu_pt->at(1),mu_eta->at(1),mu_phi->at(1),mu_e->at(1));
+    }
+
+    m_dPhi_lep=lep1.DeltaPhi(lep2);
 
     m_jet_pt_1st_correct=0;
     m_jet_pt_2nd_correct=0;
@@ -184,6 +274,18 @@ void m_add_branches(
 
     m_event_ELD_MVA_all_correct->resize(ph_pt->size());
     m_ph_kfactor_correct->resize(ph_pt->size());
+    m_efake_sf_Nominal->resize(ph_pt->size());
+    m_efake_sf_RangeDown->resize(ph_pt->size());
+    m_efake_sf_BkgFunc->resize(ph_pt->size());
+    m_efake_sf_SigFunc->resize(ph_pt->size());
+    m_efake_sf_TypeC->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt2Eta4->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt3Eta3->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt4Eta1->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt4Eta2->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt4Eta3->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt4Eta4->resize(ph_pt->size());
+    m_efake_sf_Total->resize(ph_pt->size());
 
     for(int photon = 0 ; photon < ph_pt->size(); photon++){
       m_event_ELD_MVA_all_correct->at(photon)=-99;
@@ -269,7 +371,41 @@ void m_add_branches(
         m_ph_kfactor_correct->at(photon) = _h_kfactor_dl->GetBinContent(kfactor_pt_bin_number);
       }
     }
+    m_efake_sf_Nominal->at(photon)=1;
+    m_efake_sf_RangeDown->at(photon)=1;
+    m_efake_sf_BkgFunc->at(photon)=1;
+    m_efake_sf_SigFunc->at(photon)=1;
+    m_efake_sf_TypeC->at(photon)=1;
+    m_efake_sf_Stat_Pt2Eta4->at(photon)=1;
+    m_efake_sf_Stat_Pt3Eta3->at(photon)=1;
+    m_efake_sf_Stat_Pt4Eta1->at(photon)=1;
+    m_efake_sf_Stat_Pt4Eta2->at(photon)=1;
+    m_efake_sf_Stat_Pt4Eta3->at(photon)=1;
+    m_efake_sf_Stat_Pt4Eta4->at(photon)=1;
+    m_efake_sf_Total->at(photon)=1;
 
+    if(efake_sf_applied){
+      float photon_pt = ph_pt->at(photon)*0.001;
+      float photon_eta = fabs(ph_eta->at(photon));
+      int efake_sf_eta_bin_number = _h_efake_sf_Nominal->GetXaxis()->FindBin(photon_eta);
+      int efake_sf_pt_bin_number = _h_efake_sf_Nominal->GetYaxis()->FindBin(photon_pt);
+      if (efake_sf_eta_bin_number > _h_efake_sf_Nominal->GetNbinsX()) efake_sf_eta_bin_number = _h_efake_sf_Nominal->GetNbinsX();
+      if (efake_sf_pt_bin_number > _h_efake_sf_Nominal->GetNbinsY()) efake_sf_pt_bin_number = _h_efake_sf_Nominal->GetNbinsY();
+
+      m_efake_sf_Nominal->at(photon) = _h_efake_sf_Nominal->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Nominal->at(photon) = _h_efake_sf_Nominal->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_RangeDown->at(photon) = _h_efake_sf_RangeDown->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_BkgFunc->at(photon) = _h_efake_sf_BkgFunc->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_SigFunc->at(photon) = _h_efake_sf_SigFunc->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_TypeC->at(photon) = _h_efake_sf_TypeC->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt2Eta4->at(photon) = _h_efake_sf_Stat_Pt2Eta4->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt3Eta3->at(photon) = _h_efake_sf_Stat_Pt3Eta3->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt4Eta1->at(photon) = _h_efake_sf_Stat_Pt4Eta1->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt4Eta2->at(photon) = _h_efake_sf_Stat_Pt4Eta2->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt4Eta3->at(photon) = _h_efake_sf_Stat_Pt4Eta3->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt4Eta4->at(photon) = _h_efake_sf_Stat_Pt4Eta4->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Total->at(photon) = _h_efake_sf_Total->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+    }
 
     } // end loop over photons
 
@@ -290,26 +426,35 @@ void m_add_branches(
 int main(int argc, char** argv)
 {
   // gROOT->ProcessLine( "gErrorIgnoreLevel = kFatal;");
-  std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
-  //std::string in_file_name=("model4_300_dilepton_ELD.json");
-  std::string in_file_name=("model4_150_singlelepton_ELD.json");
-  std::ifstream in_file(in_file_name);
-
-  if(!in_file){
-    std::cout<<"Error: no nn input file!"<< std::endl;
-  }
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  // string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v009/CR1S/";
-  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";
+  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/";
   //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
-  //string channels[] ={"ee","emu","mumu"};
-  string channels[] ={"mujets"};
+  string channels[] ={"ee","emu","mumu"};
+  //string channels[] ={"emu"};
 
   // Where we save to:
   // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_production/SR1S/";
+  //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
+  string myPath = "./v010_february18/CR1S/";
+
+
+  std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
+  std::string in_file_name;
+  for(const string &ch : channels){
+    if(ch=="ejets" || ch=="mujets"){
+      in_file_name=("model4_150_singlelepton_ELD.json");
+    } 
+    else if(ch=="ee" || ch=="mumu" || ch=="emu"){
+      in_file_name=("model4_300_dilepton_ELD.json");
+    }
+  }
+
+  std::ifstream in_file(in_file_name);
+  if(!in_file){
+    std::cout<<"Error: no nn input file!"<< std::endl;
+  }
 
 
   m_config_netFile = new lwt::JSONConfig(lwt::parse_json(in_file));
@@ -334,28 +479,46 @@ int main(int argc, char** argv)
 
       newfile = new TFile((newpath.c_str()), "recreate");
 
-      //// If singlelepton, add PPT systs. If not, defualt value is 1
-      //if ( (c.find("ejets") != std::string::npos) ||
-      //     (c.find("mujets") != std::string::npos) ){
-      //  m_add_ppt_systematics(newfile,"weights_PPT-2017-08-22-1.root");
-      //}
+      // If singlelepton, add PPT systs. If not, defualt value is 1
+      if ( (c.find("ejets") != std::string::npos) ||
+           (c.find("mujets") != std::string::npos) ){
+        m_add_ppt_systematics(newfile,"weights_PPT-2018-02-08-1.root");
+      }
+
+      // reset some variables:
+      is_singlelepton=false;
+      is_dilepton=false;
+      is_ee=false;
+      is_emu=false;
+      is_mumu=false;
+
+      if ( (c.find("ejets") != std::string::npos) ||
+          (c.find("mujets") != std::string::npos) ){
+          is_singlelepton=true;
+      }
+      else if (c.find("ee") != std::string::npos){
+          is_dilepton=true;
+          is_ee=true;
+      }
+      else if (c.find("emu") != std::string::npos){
+          is_dilepton=true;
+          is_emu=true;
+      }
+      else if (c.find("mumu") != std::string::npos){
+          is_dilepton=true;
+          is_mumu=true;
+      }
 
       // If ttgamma add the kfactors
       if(filename.find("ttgamma") != std::string::npos){
-
-        if ( (c.find("ejets") != std::string::npos) ||
-            (c.find("mujets") != std::string::npos) ){
-            is_singlelepton=true;
-        }
-        else if ( (c.find("ee") != std::string::npos) ||
-            (c.find("mumu") != std::string::npos) ||
-            (c.find("emu") != std::string::npos) ){
-            is_dilepton=true;
-        }
         m_add_kfactor(newfile,
           "kfactor_sinlepton_theory_fineBin.root",
           "kfactor_dilepton_theory_fineBin.root");
       }
+
+      // add efake sf files
+        //m_add_efake_sf(newfile,
+        //  "EFakeSFs_Final.root");
 
       oldFile = new TFile((file.c_str()), "read");
 

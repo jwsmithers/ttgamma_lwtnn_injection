@@ -280,6 +280,8 @@ float m_ph_isoFCT_sel;
 float m_ph_SF_iso_sel;
 float m_ph_SF_eff_sel;
 
+float m_dPhi_lep;
+
 // PPT systematics
 bool ppt_systematics_applied = false;
 Float_t   m_weight_PPT_hfake_fit=1;
@@ -293,12 +295,41 @@ TF1* _ppt_prompt_fit=nullptr;
 
 // Kfactor
 bool kfactor_applied = false; 
+bool efake_sf_applied = false; 
 vector<float> *m_ph_kfactor_correct=nullptr;
+vector<float> *m_efake_sf_Nominal=nullptr;
+vector<float> *m_efake_sf_RangeDown=nullptr;
+vector<float> *m_efake_sf_BkgFunc=nullptr;
+vector<float> *m_efake_sf_SigFunc=nullptr;
+vector<float> *m_efake_sf_TypeC=nullptr;
+vector<float> *m_efake_sf_Stat_Pt2Eta4=nullptr;
+vector<float> *m_efake_sf_Stat_Pt3Eta3=nullptr;
+vector<float> *m_efake_sf_Stat_Pt4Eta1=nullptr;
+vector<float> *m_efake_sf_Stat_Pt4Eta2=nullptr;
+vector<float> *m_efake_sf_Stat_Pt4Eta3=nullptr;
+vector<float> *m_efake_sf_Stat_Pt4Eta4=nullptr;
+vector<float> *m_efake_sf_Total=nullptr;
 TH1F* _h_kfactor_sl=nullptr;
 TH1F* _h_kfactor_dl=nullptr;
+TH1F* _h_efake_sf_Nominal=nullptr;
+TH1F* _h_efake_sf_RangeDown=nullptr;
+TH1F* _h_efake_sf_BkgFunc=nullptr;
+TH1F* _h_efake_sf_SigFunc=nullptr;
+TH1F* _h_efake_sf_TypeC=nullptr;
+TH1F* _h_efake_sf_Stat_Pt2Eta4=nullptr;
+TH1F* _h_efake_sf_Stat_Pt3Eta3=nullptr;
+TH1F* _h_efake_sf_Stat_Pt4Eta1=nullptr;
+TH1F* _h_efake_sf_Stat_Pt4Eta2=nullptr;
+TH1F* _h_efake_sf_Stat_Pt4Eta3=nullptr;
+TH1F* _h_efake_sf_Stat_Pt4Eta4=nullptr;
+TH1F* _h_efake_sf_Total=nullptr;
 
 bool is_singlelepton=false;
 bool is_dilepton=false;
+
+bool is_ee=false;
+bool is_emu=false;
+bool is_mumu=false;
 
 void activateBranches(TChain *chain){
 	// Activate branches for MC chain
