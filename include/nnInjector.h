@@ -307,7 +307,7 @@ vector<float> *m_efake_sf_Stat_Pt3Eta3=nullptr;
 vector<float> *m_efake_sf_Stat_Pt4Eta1=nullptr;
 vector<float> *m_efake_sf_Stat_Pt4Eta2=nullptr;
 vector<float> *m_efake_sf_Stat_Pt4Eta3=nullptr;
-vector<float> *m_efake_sf_Stat_Pt4Eta4=nullptr;
+vector<float> *m_efake_sf_Stat_Pt4Eta5=nullptr;
 vector<float> *m_efake_sf_Total=nullptr;
 TH1F* _h_kfactor_sl=nullptr;
 TH1F* _h_kfactor_dl=nullptr;
@@ -321,7 +321,7 @@ TH1F* _h_efake_sf_Stat_Pt3Eta3=nullptr;
 TH1F* _h_efake_sf_Stat_Pt4Eta1=nullptr;
 TH1F* _h_efake_sf_Stat_Pt4Eta2=nullptr;
 TH1F* _h_efake_sf_Stat_Pt4Eta3=nullptr;
-TH1F* _h_efake_sf_Stat_Pt4Eta4=nullptr;
+TH1F* _h_efake_sf_Stat_Pt4Eta5=nullptr;
 TH1F* _h_efake_sf_Total=nullptr;
 
 bool is_singlelepton=false;

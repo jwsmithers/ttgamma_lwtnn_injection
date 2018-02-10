@@ -87,7 +87,7 @@ void m_add_efake_sf(
   TH1F* h_efake_sf_Stat_Pt4Eta1 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta1");
   TH1F* h_efake_sf_Stat_Pt4Eta2 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta2");
   TH1F* h_efake_sf_Stat_Pt4Eta3 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta3");
-  TH1F* h_efake_sf_Stat_Pt4Eta4 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta4");
+  TH1F* h_efake_sf_Stat_Pt4Eta5 = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Stat_Pt4Eta5");
   TH1F* h_efake_sf_Total = (TH1F*)_f_efake_sf_nominal->Get("Final_EFake_SF_Total");
 
   // Save them
@@ -102,7 +102,7 @@ void m_add_efake_sf(
   h_efake_sf_Stat_Pt4Eta1->Draw(); h_efake_sf_Stat_Pt4Eta1->Write();
   h_efake_sf_Stat_Pt4Eta2->Draw(); h_efake_sf_Stat_Pt4Eta2->Write();
   h_efake_sf_Stat_Pt4Eta3->Draw(); h_efake_sf_Stat_Pt4Eta3->Write();
-  h_efake_sf_Stat_Pt4Eta4->Draw(); h_efake_sf_Stat_Pt4Eta4->Write();
+  h_efake_sf_Stat_Pt4Eta5->Draw(); h_efake_sf_Stat_Pt4Eta5->Write();
   h_efake_sf_Total->Draw(); h_efake_sf_Total->Write();
   std::cout<<"Added efake SFs..."<<std::endl;
 
@@ -140,7 +140,7 @@ void m_add_branches(
   newT->Branch("efake_sf_Stat_Pt4Eta1","vector<float>",&m_efake_sf_Stat_Pt4Eta1);
   newT->Branch("efake_sf_Stat_Pt4Eta2","vector<float>",&m_efake_sf_Stat_Pt4Eta2);
   newT->Branch("efake_sf_Stat_Pt4Eta3","vector<float>",&m_efake_sf_Stat_Pt4Eta3);
-  newT->Branch("efake_sf_Stat_Pt4Eta4","vector<float>",&m_efake_sf_Stat_Pt4Eta4);
+  newT->Branch("efake_sf_Stat_Pt4Eta5","vector<float>",&m_efake_sf_Stat_Pt4Eta5);
   newT->Branch("efake_sf_Total","vector<float>",&m_efake_sf_Total);
   if(kfactor_applied){
     _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_SL");
@@ -157,7 +157,7 @@ void m_add_branches(
     _h_efake_sf_Stat_Pt4Eta1 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta1");
     _h_efake_sf_Stat_Pt4Eta2 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta2");
     _h_efake_sf_Stat_Pt4Eta3 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta3");
-    _h_efake_sf_Stat_Pt4Eta4 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta4");
+    _h_efake_sf_Stat_Pt4Eta5 = (TH1F*)file->Get("Final_EFake_SF_Stat_Pt4Eta5");
     _h_efake_sf_Total = (TH1F*)file->Get("Final_EFake_SF_Total");
   }
 
@@ -284,7 +284,7 @@ void m_add_branches(
     m_efake_sf_Stat_Pt4Eta1->resize(ph_pt->size());
     m_efake_sf_Stat_Pt4Eta2->resize(ph_pt->size());
     m_efake_sf_Stat_Pt4Eta3->resize(ph_pt->size());
-    m_efake_sf_Stat_Pt4Eta4->resize(ph_pt->size());
+    m_efake_sf_Stat_Pt4Eta5->resize(ph_pt->size());
     m_efake_sf_Total->resize(ph_pt->size());
 
     for(int photon = 0 ; photon < ph_pt->size(); photon++){
@@ -381,7 +381,7 @@ void m_add_branches(
     m_efake_sf_Stat_Pt4Eta1->at(photon)=1;
     m_efake_sf_Stat_Pt4Eta2->at(photon)=1;
     m_efake_sf_Stat_Pt4Eta3->at(photon)=1;
-    m_efake_sf_Stat_Pt4Eta4->at(photon)=1;
+    m_efake_sf_Stat_Pt4Eta5->at(photon)=1;
     m_efake_sf_Total->at(photon)=1;
 
     if(efake_sf_applied){
@@ -403,7 +403,7 @@ void m_add_branches(
       m_efake_sf_Stat_Pt4Eta1->at(photon) = _h_efake_sf_Stat_Pt4Eta1->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
       m_efake_sf_Stat_Pt4Eta2->at(photon) = _h_efake_sf_Stat_Pt4Eta2->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
       m_efake_sf_Stat_Pt4Eta3->at(photon) = _h_efake_sf_Stat_Pt4Eta3->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
-      m_efake_sf_Stat_Pt4Eta4->at(photon) = _h_efake_sf_Stat_Pt4Eta4->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
+      m_efake_sf_Stat_Pt4Eta5->at(photon) = _h_efake_sf_Stat_Pt4Eta5->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
       m_efake_sf_Total->at(photon) = _h_efake_sf_Total->GetBinContent(efake_sf_eta_bin_number, efake_sf_pt_bin_number);
     }
 
@@ -517,8 +517,8 @@ int main(int argc, char** argv)
       }
 
       // add efake sf files
-        //m_add_efake_sf(newfile,
-        //  "EFakeSFs_Final.root");
+        m_add_efake_sf(newfile,
+          "EFakeSFs_Final.root");
 
       oldFile = new TFile((file.c_str()), "read");
 
