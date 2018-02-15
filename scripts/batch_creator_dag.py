@@ -1,5 +1,5 @@
-path="/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/ejets/"
-channel="ejets"
+path="/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/mujets/"
+channel="mujets"
 nn_file="model4_150_singlelepton_ELD.json"
 ppt_file="weights_PPT-2018-02-08-1.root"
 egammaSF="EFakeSFs_Final.root"
@@ -11,21 +11,20 @@ def printHeader(f,jobname):
   f.write("transfer_input_files  = "+nn_file+","+ppt_file+","+egammaSF+","+kfactor_files+"\n")
   f.write("getenv                = True\n")
   f.write("JobBatchName	      = "+jobname+"\n")
-  f.write("periodic_remove       = CurrentTime-EnteredCurrentStatus > 3600*24\n")
   f.write('+JobFlavour           = "testmatch"\n')
   f.write("\n")
 
 
 from os import listdir
 from os.path import isfile, join
+from random import shuffle
+
 ntuples = [f for f in listdir(path) if isfile(join(path, f))]
-#ntuples=list(reversed(ntuples_temp))
+shuffle(ntuples)
 
 ntuples = [i for i in ntuples if 'p2952' not in i]
 ntuples = [i for i in ntuples if 'p2950' not in i]
 ntuples = [i for i in ntuples if '98pc' not in i]
-#ntuples = [i for i in ntuples if 'ttgamma' not in i]
-#ntuples = [i for i in ntuples if 'ttgamma' not in i]
 
 
 def chunks(l, n):
