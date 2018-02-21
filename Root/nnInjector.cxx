@@ -176,6 +176,7 @@ void m_add_branches(
   newT->Branch("event_ELD_MVA_correct",&m_event_ELD_MVA_correct);   
 
   newT->Branch("dPhi_lep",&m_dPhi_lep);   
+  newT->Branch("dEta_lep",&m_dEta_lep);   
 
 
   activateBranches(fChain_func);
@@ -186,8 +187,9 @@ void m_add_branches(
     loadBar(event, nentries, 100, 50);
 
 
-    // Add the lep delta phi variable
+    // Add the lep delta phi and delta eta variable
     m_dPhi_lep=0;
+    m_dEta_lep=0;
     TLorentzVector lep1;
     TLorentzVector lep2;
     if(is_ee){
@@ -204,6 +206,7 @@ void m_add_branches(
     }
 
     m_dPhi_lep=lep1.DeltaPhi(lep2);
+    m_dEta_lep=lep1.Eta()-lep2.Eta();
 
     m_jet_pt_1st_correct=0;
     m_jet_pt_2nd_correct=0;
@@ -430,14 +433,14 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // Where we read from:
   string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/";
-  //string path = "/eos/user/j/jwsmith/reprocessedNtuples/v009/QE2_yichen/";
-  string channels[] ={"ee","emu","mumu"};
-  //string channels[] ={"emu"};
+  //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/QE2/p3315/";
+  //string channels[] ={"ee","emu","mumu"};
+  string channels[] ={"ejets"};
 
   // Where we save to:
   // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
-  string myPath = "./v010_february18/CR1S/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
+  //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
 
 
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;

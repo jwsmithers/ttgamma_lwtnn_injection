@@ -281,6 +281,7 @@ float m_ph_SF_iso_sel;
 float m_ph_SF_eff_sel;
 
 float m_dPhi_lep;
+float m_dEta_lep;
 
 // PPT systematics
 bool ppt_systematics_applied = false;
@@ -335,8 +336,8 @@ void activateBranches(TChain *chain){
 	// Activate branches for MC chain
 	#define SETBRANCH(branchName) chain->SetBranchAddress(#branchName,&branchName)
 
-	SETBRANCH(weight_mm_ejets);
-	SETBRANCH(weight_mm_mujets);
+	//SETBRANCH(weight_mm_ejets);
+	//SETBRANCH(weight_mm_mujets);
 	SETBRANCH(weight_mc);
 	SETBRANCH(weight_pileup);
 	SETBRANCH(weight_leptonSF);
@@ -346,8 +347,8 @@ void activateBranches(TChain *chain){
 	SETBRANCH(weight_bTagSF_70);
 	SETBRANCH(weight_bTagSF_Continuous);
 	SETBRANCH(weight_jvt);
-	SETBRANCH(weight_pileup_UP);
-	SETBRANCH(weight_pileup_DOWN);
+	//SETBRANCH(weight_pileup_UP);
+	//SETBRANCH(weight_pileup_DOWN);
 	SETBRANCH(eventNumber);
 	SETBRANCH(runNumber);
 	SETBRANCH(randomRunNumber);
@@ -411,16 +412,10 @@ void activateBranches(TChain *chain){
 	SETBRANCH(mujets_2016);
 	SETBRANCH(emu_2015);
 	SETBRANCH(emu_2016);
-	SETBRANCH(emuSS_2015);
-	SETBRANCH(emuSS_2016);
 	SETBRANCH(ee_2015);
 	SETBRANCH(ee_2016);
-	SETBRANCH(eeSS_2015);
-	SETBRANCH(eeSS_2016);
 	SETBRANCH(mumu_2015);
 	SETBRANCH(mumu_2016);
-	SETBRANCH(mumuSS_2015);
-	SETBRANCH(mumuSS_2016);
 	SETBRANCH(HLT_mu20_iloose_L1MU15);
 	SETBRANCH(HLT_e60_lhmedium_nod0);
 	SETBRANCH(HLT_mu26_ivarmedium);
