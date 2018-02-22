@@ -295,9 +295,13 @@ TF1* _ppt_hfake_fit=nullptr;
 TF1* _ppt_prompt_fit=nullptr;
 
 // Kfactor
-bool kfactor_applied = false; 
-bool efake_sf_applied = false; 
+bool kfactor_applied = false;
 vector<float> *m_ph_kfactor_correct=nullptr;
+TH1F* _h_kfactor_sl=nullptr;
+TH1F* _h_kfactor_dl=nullptr;
+
+// egamma fake SF
+bool efake_sf_applied = false;
 vector<float> *m_efake_sf_Nominal=nullptr;
 vector<float> *m_efake_sf_RangeDown=nullptr;
 vector<float> *m_efake_sf_BkgFunc=nullptr;
@@ -310,8 +314,6 @@ vector<float> *m_efake_sf_Stat_Pt4Eta2=nullptr;
 vector<float> *m_efake_sf_Stat_Pt4Eta3=nullptr;
 vector<float> *m_efake_sf_Stat_Pt4Eta5=nullptr;
 vector<float> *m_efake_sf_Total=nullptr;
-TH1F* _h_kfactor_sl=nullptr;
-TH1F* _h_kfactor_dl=nullptr;
 TH1F* _h_efake_sf_Nominal=nullptr;
 TH1F* _h_efake_sf_RangeDown=nullptr;
 TH1F* _h_efake_sf_BkgFunc=nullptr;
@@ -324,6 +326,27 @@ TH1F* _h_efake_sf_Stat_Pt4Eta2=nullptr;
 TH1F* _h_efake_sf_Stat_Pt4Eta3=nullptr;
 TH1F* _h_efake_sf_Stat_Pt4Eta5=nullptr;
 TH1F* _h_efake_sf_Total=nullptr;
+
+// hadronic fake SF
+bool hadFake_sf_applied = false;
+vector<float> *m_hadFake_sf_Nominal=nullptr;
+vector<float> *m_hadFake_sf_ttbarModelling_Sherpa=nullptr;
+vector<float> *m_hadFake_sf_ttbarModelling_ISRFSRUp=nullptr;
+vector<float> *m_hadFake_sf_ttbarModelling_ISRFSRDn=nullptr;
+vector<float> *m_hadFake_sf_BkgSubtraction_ttgamma=nullptr;
+vector<float> *m_hadFake_sf_BkgSubtraction_rest=nullptr;
+TH1F* _hadFake_sf_conv_Nominal=nullptr;
+TH1F* _hadFake_sf_conv_ttbarModelling_Sherpa=nullptr;
+TH1F* _hadFake_sf_conv_ttbarModelling_ISRFSRUp=nullptr;
+TH1F* _hadFake_sf_conv_ttbarModelling_ISRFSRDown=nullptr;
+TH1F* _hadFake_sf_conv_BkgSubtraction_ttgamma=nullptr;
+TH1F* _hadFake_sf_conv_BkgSubtraction_rest=nullptr;
+TH1F* _hadFake_sf_unconv_Nominal=nullptr;
+TH1F* _hadFake_sf_unconv_ttbarModelling_Sherpa=nullptr;
+TH1F* _hadFake_sf_unconv_ttbarModelling_ISRFSRUp=nullptr;
+TH1F* _hadFake_sf_unconv_ttbarModelling_ISRFSRDown=nullptr;
+TH1F* _hadFake_sf_unconv_BkgSubtraction_ttgamma=nullptr;
+TH1F* _hadFake_sf_unconv_BkgSubtraction_rest=nullptr;
 
 bool is_singlelepton=false;
 bool is_dilepton=false;
