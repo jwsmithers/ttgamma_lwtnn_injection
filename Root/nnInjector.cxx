@@ -495,7 +495,7 @@ void m_add_branches(
           float absEta = fabs(ph_eta->at(photon));
           int bin_number = 0;
 
-          if(ph_conversionType->at(photon)==1)
+          if(ph_conversionType->at(photon)==0)
           { //Unconverted photons:
             if(absEta<0.60){
               if(pt>=20 && pt<30) bin_number = 1;
@@ -509,7 +509,7 @@ void m_add_branches(
               bin_number = 5;
             }
           }
-          else
+          else if (ph_conversionType->at(photon)==1 || ph_conversionType->at(photon)==2 || ph_conversionType->at(photon)==3 || ph_conversionType->at(photon)==4 || ph_conversionType->at(photon)==5)
           { //Converted photons:
             if(absEta<0.60)
               bin_number = 1;
