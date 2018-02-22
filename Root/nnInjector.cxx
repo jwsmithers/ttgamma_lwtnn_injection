@@ -491,8 +491,8 @@ void m_add_branches(
         //Apply had-fake SF only for tight and isolated photons:
         if( ph_isTight->at(photon) && ph_isoFCT->at(photon))
         {
-          float ph_pt = ph_pt->at(photon)*0.001;
-          float ph_absEta = fabs(ph_eta->at(photon));
+          float pt = ph_pt->at(photon)*0.001;
+          float absEta = fabs(ph_eta->at(photon));
           int bin_number = 0;
 
           if(ph_conversionType->at(photon)==1)
@@ -524,15 +524,16 @@ void m_add_branches(
           }
           
           if(bin_number!=0){
-            m_hadFake_sf_Nominal->at(photon) = _hfakeSF_conv_Nominal->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hfakeSF_conv_ttbarModelling_Sherpa->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hfakeSF_conv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hfakeSF_conv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
-            m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hfakeSF_conv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
-            m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hfakeSF_conv_BkgSubtraction_rest->GetBinContent(bin_number);
+            m_hadFake_sf_Nominal->at(photon) = _hadFake_sf_conv_Nominal->GetBinContent(bin_number);
+            m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_conv_ttbarModelling_Sherpa->GetBinContent(bin_number);
+            m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
+            m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
+            m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_conv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
+            m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_conv_BkgSubtraction_rest->GetBinContent(bin_number);
           }
         }
       }
+
 
     } // end loop over photons
 
@@ -648,7 +649,7 @@ int main(int argc, char** argv)
           "EFakeSFs_Final.root");
       
       // add hadronic fake sf files
-      m_add_hadFake_sf( newfile, "hfake_SF_final_3D.root" )
+      m_add_hadFake_sf( newfile, "hfake_SF_final_3D.root" );
 
       oldFile = new TFile((file.c_str()), "read");
 
