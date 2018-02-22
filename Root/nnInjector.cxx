@@ -558,6 +558,7 @@ int main(int argc, char** argv)
   // path to ntuples from AnalysisTop
   // Where we read from:
   string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/";
+  //string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";//FIX ME!
   //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/QE2/p3315/";
   //string channels[] ={"ee","emu","mumu"};
   string channels[] ={"ejets"};
@@ -565,6 +566,7 @@ int main(int argc, char** argv)
   // Where we save to:
   // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
   string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
+  //string myPath = "/afs/cern.ch/user/g/ghasemi/test/";//FIX ME! 
   //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
 
 
