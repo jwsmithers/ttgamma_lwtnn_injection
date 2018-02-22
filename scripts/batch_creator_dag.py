@@ -1,14 +1,15 @@
-path="/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/mujets/"
 channel="mujets"
+path="/eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/"+channel+"/"
 nn_file="model4_150_singlelepton_ELD.json"
 ppt_file="weights_PPT-2018-02-08-1.root"
 egammaSF="EFakeSFs_Final.root"
+hfakeSF="hfake_SF_final_3D.root"
 kfactor_files="kfactor_sinlepton_theory_fineBin.root,kfactor_dilepton_theory_fineBin.root"
 
 
 def printHeader(f,jobname):
   f.write("executable            = /afs/cern.ch/work/j/jwsmith/github/ttgamma_lwtnn_injection/build_batch/"+channel+"/nnInjector\n")
-  f.write("transfer_input_files  = "+nn_file+","+ppt_file+","+egammaSF+","+kfactor_files+"\n")
+  f.write("transfer_input_files  = "+nn_file+","+ppt_file+","+egammaSF+","+hfakeSF+","+kfactor_files+"\n")
   f.write("getenv                = True\n")
   f.write("JobBatchName	      = "+jobname+"\n")
   f.write('+JobFlavour           = "testmatch"\n')
