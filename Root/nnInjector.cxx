@@ -491,7 +491,7 @@ void m_add_branches(
         //Apply had-fake SF only for tight and isolated photons:
         if( ph_isTight->at(photon) && ph_isoFCT->at(photon))
         {
-          float pt = ph_pt->at(photon)*0.001;
+          float pt = ph_pt->at(photon)*1000;
           float absEta = fabs(ph_eta->at(photon));
           int bin_number = 0;
 
