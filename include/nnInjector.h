@@ -296,7 +296,8 @@ TF1* _ppt_prompt_fit=nullptr;
 
 // Kfactor
 bool kfactor_applied = false;
-vector<float> *m_ph_kfactor_correct=nullptr;
+vector<float> *m_ph_kfactor_pt=nullptr;
+vector<float> *m_ph_kfactor_inclusive=nullptr;
 TH1F* _h_kfactor_sl=nullptr;
 TH1F* _h_kfactor_dl=nullptr;
 

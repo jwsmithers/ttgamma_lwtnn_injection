@@ -169,7 +169,8 @@ void m_add_branches(
     _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
   }
 
-  newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_correct);
+  newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_pt);
+  newT->Branch("ph_kfactor_overall","vector<float>",&m_ph_kfactor_inclusive);
   if(kfactor_applied){
     _h_kfactor_sl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_SL");
     _h_kfactor_dl = (TH1F*)file->Get("kfactor_nlo_mt_ph_pt_fine_DL");
@@ -338,7 +339,8 @@ void m_add_branches(
     }
 
     m_event_ELD_MVA_all_correct->resize(ph_pt->size());
-    m_ph_kfactor_correct->resize(ph_pt->size());
+    m_ph_kfactor_pt->resize(ph_pt->size());
+    m_ph_kfactor_inclusive->resize(ph_pt->size());
     m_efake_sf_Nominal->resize(ph_pt->size());
     m_efake_sf_RangeDown->resize(ph_pt->size());
     m_efake_sf_BkgFunc->resize(ph_pt->size());
@@ -425,20 +427,24 @@ void m_add_branches(
       delete _ppt_prompt_fit;
       
       // Add in the Kfactor weights
-      m_ph_kfactor_correct->at(photon)=1;
+      m_ph_kfactor_pt->at(photon)=1;
+      m_ph_kfactor_inclusive->at(photon)=1;
+
       if(kfactor_applied){
         float photon_pt = ph_pt->at(photon)*0.001;
         if(is_singlelepton){
           int kfactor_pt_bin_number = _h_kfactor_sl->GetXaxis()->FindBin(photon_pt);
           if (photon_pt >= _h_kfactor_sl->GetXaxis()->GetXmax())
             kfactor_pt_bin_number = _h_kfactor_sl->GetXaxis()->GetLast();
-          m_ph_kfactor_correct->at(photon) = _h_kfactor_sl->GetBinContent(kfactor_pt_bin_number);
+          m_ph_kfactor_pt->at(photon) = _h_kfactor_sl->GetBinContent(kfactor_pt_bin_number);
+          m_ph_kfactor_inclusive->at(photon)=1.7;
         }
         if (is_dilepton){
           int kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->FindBin(photon_pt);
           if (photon_pt >= _h_kfactor_dl->GetXaxis()->GetXmax())
             kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->GetLast();
-          m_ph_kfactor_correct->at(photon) = _h_kfactor_dl->GetBinContent(kfactor_pt_bin_number);
+          m_ph_kfactor_pt->at(photon) = _h_kfactor_dl->GetBinContent(kfactor_pt_bin_number);
+          m_ph_kfactor_inclusive->at(photon)=1.99;
         }
       }
       
@@ -568,7 +574,7 @@ int main(int argc, char** argv)
   //string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";//FIX ME!
   //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/QE2/p3315/";
   //string channels[] ={"ee","emu","mumu"};
-  string channels[] ={"ejets"};
+  string channels[] ={"ee"};
 
   // Where we save to:
   // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
