@@ -139,6 +139,7 @@ void m_add_hadFake_sf( TFile *file, std::string source )
   hfakeSF_conv_ttbarModelling_ISRFSRDown->Draw(); hfakeSF_conv_ttbarModelling_ISRFSRDown->Write();
   hfakeSF_conv_BkgSubtraction_ttgamma->Draw(); hfakeSF_conv_BkgSubtraction_ttgamma->Write();
   hfakeSF_conv_BkgSubtraction_rest->Draw(); hfakeSF_conv_BkgSubtraction_rest->Write();
+  hfakeSF_unconv_Nominal->Draw(); hfakeSF_unconv_Nominal->Write();
   hfakeSF_unconv_ttbarModelling_Sherpa->Draw(); hfakeSF_unconv_ttbarModelling_Sherpa->Write();
   hfakeSF_unconv_ttbarModelling_ISRFSRUp->Draw(); hfakeSF_unconv_ttbarModelling_ISRFSRUp->Write();
   hfakeSF_unconv_ttbarModelling_ISRFSRDown->Draw(); hfakeSF_unconv_ttbarModelling_ISRFSRDown->Write();
@@ -491,7 +492,7 @@ void m_add_branches(
         //Apply had-fake SF only for tight and isolated photons:
         if( ph_isTight->at(photon) && ph_isoFCT->at(photon))
         {
-          float pt = ph_pt->at(photon)*1000;
+          float pt = ph_pt->at(photon)/1e3;
           float absEta = fabs(ph_eta->at(photon));
           int bin_number = 0;
 
