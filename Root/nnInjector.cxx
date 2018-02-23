@@ -508,6 +508,14 @@ void m_add_branches(
             if(absEta>1.52 && absEta<=2.37){
               bin_number = 5;
             }
+            if(bin_number!=0){
+              m_hadFake_sf_Nominal->at(photon) = _hadFake_sf_unconv_Nominal->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_unconv_ttbarModelling_Sherpa->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_unconv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_unconv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
+              m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_unconv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
+              m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_unconv_BkgSubtraction_rest->GetBinContent(bin_number);
+            }
           }
           else if (ph_conversionType->at(photon)==1 || ph_conversionType->at(photon)==2 || ph_conversionType->at(photon)==3 || ph_conversionType->at(photon)==4 || ph_conversionType->at(photon)==5)
           { //Converted photons:
@@ -521,16 +529,15 @@ void m_add_branches(
               if(pt>=20 && pt<50) bin_number = 4;
               if(pt>=50) bin_number = 5;
             }
-          }
-          
-          if(bin_number!=0){
-            m_hadFake_sf_Nominal->at(photon) = _hadFake_sf_conv_Nominal->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_conv_ttbarModelling_Sherpa->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
-            m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
-            m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_conv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
-            m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_conv_BkgSubtraction_rest->GetBinContent(bin_number);
-          }
+            if(bin_number!=0){
+              m_hadFake_sf_Nominal->at(photon) = _hadFake_sf_conv_Nominal->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_conv_ttbarModelling_Sherpa->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
+              m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
+              m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_conv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
+              m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_conv_BkgSubtraction_rest->GetBinContent(bin_number);
+            }
+          } 
         }
       }
 
