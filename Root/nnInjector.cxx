@@ -252,25 +252,52 @@ void m_add_branches(
 
 
     // Add the lep delta phi and delta eta variable
-    m_dPhi_lep=0;
-    m_dEta_lep=0;
+    m_dPhi_lep=-99;
+    m_dEta_lep=-99;
     TLorentzVector lep1;
     TLorentzVector lep2;
-    if(is_ee){
-    lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0)); 
-    lep2.SetPtEtaPhiE(el_pt->at(1),el_eta->at(1),el_phi->at(1),el_e->at(1)); 
+
+    // reset some variables:
+    is_singlelepton=false;
+    is_dilepton=false;
+    is_ee=false;
+    is_emu=false;
+    is_mumu=false;
+
+    // Figure out what channel we're in
+    if (ejets_2015 || ejets_2016 || mujets_2015 || mujets_2016 ) {
+      is_singlelepton=true;
     }
-    else if(is_emu){
-    lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0));
-    lep2.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
+    if (ee_2015 || ee_2016 ) {
+      is_dilepton=true;
+      is_ee=true;
     }
-    else if(is_mumu){
-    lep1.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
-    lep2.SetPtEtaPhiE(mu_pt->at(1),mu_eta->at(1),mu_phi->at(1),mu_e->at(1));
+    if (emu_2015 || emu_2016 ) {
+      is_dilepton=true;
+      is_emu=true;
+    }
+    if (mumu_2015 || mumu_2016 ) {
+      is_dilepton=true;
+      is_mumu=true;
     }
 
-    m_dPhi_lep=lep1.DeltaPhi(lep2);
-    m_dEta_lep=lep1.Eta()-lep2.Eta();
+    if(is_dilepton) {
+      if(is_ee){
+      lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0)); 
+      lep2.SetPtEtaPhiE(el_pt->at(1),el_eta->at(1),el_phi->at(1),el_e->at(1)); 
+      }
+      else if(is_emu){
+      lep1.SetPtEtaPhiE(el_pt->at(0),el_eta->at(0),el_phi->at(0),el_e->at(0));
+      lep2.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
+      }
+      else if(is_mumu){
+      lep1.SetPtEtaPhiE(mu_pt->at(0),mu_eta->at(0),mu_phi->at(0),mu_e->at(0));
+      lep2.SetPtEtaPhiE(mu_pt->at(1),mu_eta->at(1),mu_phi->at(1),mu_e->at(1));
+      }
+
+      m_dPhi_lep=lep1.DeltaPhi(lep2);
+      m_dEta_lep=lep1.Eta()-lep2.Eta();
+    }
 
     m_jet_pt_1st_correct=0;
     m_jet_pt_2nd_correct=0;
@@ -571,16 +598,15 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/";
+  //string path = "root://eosuser//eos/user/c/caudron2/TtGamma_PL/v010/";
+  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1/";
   //string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";//FIX ME!
   //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/QE2/p3315/";
-  //string channels[] ={"ee","emu","mumu"};
-  string channels[] ={"ee"};
+  string channels[] ={"emu"};
 
   // Where we save to:
-  // string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v009_flattened/CR1S/";
-  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
-  //string myPath = "/afs/cern.ch/user/g/ghasemi/test/";//FIX ME! 
+  //string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010_february18/particle_level/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1/";
   //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
 
 
@@ -629,30 +655,6 @@ int main(int argc, char** argv)
         m_add_ppt_systematics(newfile,"weights_PPT-2018-02-08-1.root");
       }
 
-      // reset some variables:
-      is_singlelepton=false;
-      is_dilepton=false;
-      is_ee=false;
-      is_emu=false;
-      is_mumu=false;
-
-      if ( (c.find("ejets") != std::string::npos) ||
-          (c.find("mujets") != std::string::npos) ){
-          is_singlelepton=true;
-      }
-      else if (c.find("ee") != std::string::npos){
-          is_dilepton=true;
-          is_ee=true;
-      }
-      else if (c.find("emu") != std::string::npos){
-          is_dilepton=true;
-          is_emu=true;
-      }
-      else if (c.find("mumu") != std::string::npos){
-          is_dilepton=true;
-          is_mumu=true;
-      }
-
       // If ttgamma add the kfactors
       if(filename.find("ttgamma") != std::string::npos){
         m_add_kfactor(newfile,
@@ -661,8 +663,7 @@ int main(int argc, char** argv)
       }
 
       // add efake sf files
-        m_add_efake_sf(newfile,
-          "EFakeSFs_Final.root");
+      m_add_efake_sf(newfile,"EFakeSFs_Final.root");
       
       // add hadronic fake sf files
       m_add_hadFake_sf( newfile, "hfake_SF_final_3D.root" );
@@ -690,9 +691,11 @@ int main(int argc, char** argv)
         TTree *newtree=nullptr;
 
         obj = key->ReadObj() ;
-        if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (strcmp("sumWeights",obj->GetName()) == 0)) {
+        if ( (strcmp(obj->IsA()->GetName(),"TTree")!=0) || (strcmp("sumWeights",obj->GetName()) == 0)
+          || (strcmp("truth",obj->GetName()) == 0) || (strcmp("particleLevel",obj->GetName()) == 0) ) {
           printf("Not running over: %s \n",obj->GetName()); continue; 
         }
+
         printf("#####################################\n");
         printf("Currently working on %s \n",obj->GetName());
         printf("#####################################\n");
