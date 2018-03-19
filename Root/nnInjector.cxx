@@ -598,17 +598,24 @@ int main(int argc, char** argv)
 
   // path to ntuples from AnalysisTop
   // Where we read from:
-  //string path = "root://eosuser//eos/user/c/caudron2/TtGamma_PL/v010/";
-  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1/";
+  ////////// particle level //////////
+  //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/particle_level/";
+  ///////////////////////////////////
+  string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/CR1S/";
   //string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010/SR1S/";//FIX ME!
+  ////////// QCD /////////
+  //mujets QCD 16 doesn't seem to work
   //string path = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010/QE2/p3315/";
-  string channels[] ={"emu"};
+  // So use the one I originally processes,  should be fine
+  //string path = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_production/QE2/";
+  ////////////////////////
 
   // Where we save to:
   //string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010_february18/particle_level/";
-  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
   //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
 
+  string channels[] ={"mujets"};
 
   std::cout << "Found " << argc-1 << " files to run over:" << std::endl;
   std::string in_file_name;
@@ -650,6 +657,9 @@ int main(int argc, char** argv)
       newfile = new TFile((newpath.c_str()), "recreate");
 
       // If singlelepton, add PPT systs. If not, defualt value is 1
+      // We have to be careful here. We don't want these in dilepton ntuples
+      // because it makes it hard to fit SL and DL combined.
+      // But we do need them to define PPT systematics for prompt...sometimes
       if ( (c.find("ejets") != std::string::npos) ||
            (c.find("mujets") != std::string::npos) ){
         m_add_ppt_systematics(newfile,"weights_PPT-2018-02-08-1.root");
