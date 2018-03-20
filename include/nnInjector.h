@@ -21,6 +21,7 @@
 #include <TChainElement.h>
 #include "TH1D.h"
 #include "TH1F.h"
+#include "TH3F.h"
 #include "TF1.h"
 #include "TSystemDirectory.h"
 #include "TSystemFile.h"
@@ -285,14 +286,19 @@ float m_dEta_lep;
 
 // PPT systematics
 bool ppt_systematics_applied = false;
-Float_t   m_weight_PPT_hfake_fit=1;
-Float_t   m_weight_PPT_prompt_fit=1;
-Float_t   m_weight_PPT_hfake_bin=1;
-Float_t   m_weight_PPT_prompt_bin=1;
-TH1F* _ppt_prompt=nullptr;
-TH1F* _ppt_hfake=nullptr;
-TF1* _ppt_hfake_fit=nullptr;
-TF1* _ppt_prompt_fit=nullptr;
+Float_t   m_weight_PPT_hfake_1D_fit=1;
+Float_t   m_weight_PPT_prompt_1D_fit=1;
+Float_t   m_weight_PPT_hfake_1D_bin=1;
+Float_t   m_weight_PPT_prompt_1D_bin=1;
+Float_t   m_weight_PPT_hfake_3D_bin=1;
+Float_t   m_weight_PPT_prompt_3D_bin=1;
+
+TH1F* _ppt_prompt_1D=nullptr;
+TH1F* _ppt_hfake_1D=nullptr;
+TF1* _ppt_hfake_1D_fit=nullptr;
+TF1* _ppt_prompt_1D_fit=nullptr;
+TH3F* _ppt_prompt_3D=nullptr;
+TH3F* _ppt_hfake_3D=nullptr;
 
 // Kfactor
 bool kfactor_applied = false;

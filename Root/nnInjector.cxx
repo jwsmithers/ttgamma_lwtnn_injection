@@ -15,23 +15,38 @@ void m_add_ppt_systematics(
   TFile *syst = new TFile(source.c_str(),"read"); 
   if ( syst->IsOpen() ) std::cout << source << " file opened successfully" 
     << std::endl;
-  // Get the two ratio plots
-  TH1F* ppt_prompt = (TH1F*)syst->Get("weight_PPT_prompt"); //It's ee, emu and mumu
-  ppt_prompt->SetName("weight_PPT_prompt_histo");
-  TH1F* ppt_hfake = (TH1F*)syst->Get("weight_PPT_fake");//It's ejets and mujets
-  ppt_hfake->SetName("weight_PPT_hfake_histo");
+  // Get the two 1D ratio plots
+  TH1F* ppt_prompt_1D = (TH1F*)syst->Get("hist_ppt_prompt_1D"); //It's ee, emu and mumu
+  ppt_prompt_1D->SetName("weight_PPT_prompt_histo_1D");
+  TH1F* ppt_hfake_1D = (TH1F*)syst->Get("hist_ppt_fake_1D");//It's ejets and mujets
+  ppt_hfake_1D->SetName("weight_PPT_hfake_histo_1D");
+
+  // Get the two 3D histograms
+  TH3F* ppt_prompt_3D = (TH3F*)syst->Get("hist_ppt_prompt_3D"); //It's ee, emu and mumu
+  ppt_prompt_3D->SetName("weight_PPT_prompt_histo_3D");
+  TH3F* ppt_hfake_3D = (TH3F*)syst->Get("hist_ppt_fake_3D");//It's ejets and mujets
+  ppt_hfake_3D->SetName("weight_PPT_hfake_histo_3D");
 
   // Save them
   file->cd();
-  ppt_hfake->Draw();
-  ppt_hfake->Fit("pol1");
-  ppt_hfake->Write();
-  std::cout<<"Added hfake PPT syst..."<<std::endl;
+  ppt_hfake_1D->Draw();
+  ppt_hfake_1D->Fit("pol1");
+  ppt_hfake_1D->Write();
+  std::cout<<"Added 1D hfake PPT syst..."<<std::endl;
 
-  ppt_prompt->Draw();
-  ppt_prompt->Fit("pol1");
-  ppt_prompt->Write();
-  std::cout<<"Added prompt PPT syst..."<<std::endl;
+  ppt_prompt_1D->Draw();
+  ppt_prompt_1D->Fit("pol1");
+  ppt_prompt_1D->Write();
+  std::cout<<"Added 1D prompt PPT syst..."<<std::endl;
+
+  ppt_hfake_3D->Draw();
+  ppt_hfake_3D->Write();
+  std::cout<<"Added 3D hfake PPT syst..."<<std::endl;
+
+  ppt_prompt_3D->Draw();
+  ppt_prompt_3D->Write();
+  std::cout<<"Added 3D prompt PPT syst..."<<std::endl;
+
   // To be used later in eventloop
   ppt_systematics_applied = true;
 }
@@ -161,13 +176,19 @@ void m_add_branches(
 
   std::cout<< nentries << " entries" << std::endl;
 
-  newT->Branch("weight_PPT_hfake_fit",&m_weight_PPT_hfake_fit);
-  newT->Branch("weight_PPT_prompt_fit",&m_weight_PPT_prompt_fit);
-  newT->Branch("weight_PPT_hfake_bin",&m_weight_PPT_hfake_bin);
-  newT->Branch("weight_PPT_prompt_bin",&m_weight_PPT_prompt_bin);
+  newT->Branch("weight_PPT_hfake_1D_fit",&m_weight_PPT_hfake_1D_fit);
+  newT->Branch("weight_PPT_prompt_1D_fit",&m_weight_PPT_prompt_1D_fit);
+  newT->Branch("weight_PPT_hfake_1D_bin",&m_weight_PPT_hfake_1D_bin);
+  newT->Branch("weight_PPT_prompt_1D_bin",&m_weight_PPT_prompt_1D_bin);
+  newT->Branch("weight_PPT_hfake_3D_bin",&m_weight_PPT_hfake_3D_bin);
+  newT->Branch("weight_PPT_prompt_3D_bin",&m_weight_PPT_prompt_3D_bin);
+
   if(ppt_systematics_applied){
-    _ppt_prompt = (TH1F*)file->Get("weight_PPT_prompt_histo");
-    _ppt_hfake = (TH1F*)file->Get("weight_PPT_hfake_histo");
+    _ppt_prompt_1D = (TH1F*)file->Get("weight_PPT_prompt_histo_1D");
+    _ppt_hfake_1D = (TH1F*)file->Get("weight_PPT_hfake_histo_1D");
+    _ppt_prompt_3D = (TH3F*)file->Get("weight_PPT_prompt_histo_3D");
+    _ppt_hfake_3D = (TH3F*)file->Get("weight_PPT_hfake_histo_3D");
+
   }
 
   newT->Branch("ph_kfactor_correct","vector<float>",&m_ph_kfactor_pt);
@@ -435,24 +456,40 @@ void m_add_branches(
       // How we handle PPT weights
       if(ppt_systematics_applied){
         float PPT_x_value = ph_HFT_MVA->at(photon);
+        float ph_pt_x_value = ph_pt->at(photon);
+        float ph_eta_x_value = ph_eta->at(photon);
 
         // Hfake derive fit weight
-        TF1 *_ppt_hfake_fit = (TF1*)_ppt_hfake->GetFunction("pol1");
-        m_weight_PPT_hfake_fit = _ppt_hfake_fit->Eval(PPT_x_value);
+        TF1 *_ppt_hfake_1D_fit = (TF1*)_ppt_hfake_1D->GetFunction("pol1");
+        m_weight_PPT_hfake_1D_fit = _ppt_hfake_1D_fit->Eval(PPT_x_value);
         // Hfake derive bin weight
-        int hfake_bin_number = _ppt_hfake->GetXaxis()->FindBin(PPT_x_value);
-        m_weight_PPT_hfake_bin = _ppt_hfake->GetBinContent(hfake_bin_number);
+        int hfake_bin_number = _ppt_hfake_1D->GetXaxis()->FindBin(PPT_x_value);
+        m_weight_PPT_hfake_1D_bin = _ppt_hfake_1D->GetBinContent(hfake_bin_number);
 
         // Prompt derive fit weight
-        TF1 *_ppt_prompt_fit = (TF1*)_ppt_prompt->GetFunction("pol1");
-        m_weight_PPT_prompt_fit = _ppt_prompt_fit->Eval(PPT_x_value);
+        TF1 *_ppt_prompt_1D_fit = (TF1*)_ppt_prompt_1D->GetFunction("pol1");
+        m_weight_PPT_prompt_1D_fit = _ppt_prompt_1D_fit->Eval(PPT_x_value);
         // Prompt derive bin weight
-        int promt_bin_number = _ppt_prompt->GetXaxis()->FindBin(PPT_x_value);
-        m_weight_PPT_prompt_bin = _ppt_prompt->GetBinContent(promt_bin_number);
+        int prompt_bin_number = _ppt_prompt_1D->GetXaxis()->FindBin(PPT_x_value);
+        m_weight_PPT_prompt_1D_bin = _ppt_prompt_1D->GetBinContent(prompt_bin_number);
+
+
+        // 3D systematics in pt, eta and PPT
+        auto prompt_eta_bin_number = _ppt_prompt_3D->GetXaxis()->FindBin(abs(ph_eta_x_value));  
+        auto prompt_pt_bin_number = _ppt_prompt_3D->GetYaxis()->FindBin(ph_pt_x_value);  
+        auto prompt_PPT_bin_number = _ppt_prompt_3D->GetZaxis()->FindBin(PPT_x_value);  
+
+        auto hfake_eta_bin_number = _ppt_hfake_3D->GetXaxis()->FindBin(abs(ph_eta_x_value));
+        auto hfake_pt_bin_number = _ppt_hfake_3D->GetYaxis()->FindBin(ph_pt_x_value);  
+        auto hfake_PPT_bin_number = _ppt_hfake_3D->GetZaxis()->FindBin(PPT_x_value);
+
+        m_weight_PPT_hfake_3D_bin = _ppt_hfake_3D->GetBinContent(hfake_eta_bin_number,hfake_pt_bin_number,hfake_PPT_bin_number);
+        m_weight_PPT_prompt_3D_bin = _ppt_prompt_3D->GetBinContent(prompt_eta_bin_number,prompt_pt_bin_number,prompt_PPT_bin_number);
+        std::cout<<"m_weight_PPT_prompt_3D_bin "<< m_weight_PPT_prompt_3D_bin << std::endl;
         
       }
-      delete _ppt_hfake_fit;
-      delete _ppt_prompt_fit;
+      delete _ppt_hfake_1D_fit;
+      delete _ppt_prompt_1D_fit;
       
       // Add in the Kfactor weights
       m_ph_kfactor_pt->at(photon)=1;
@@ -612,8 +649,9 @@ int main(int argc, char** argv)
 
   // Where we save to:
   //string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010_february18/particle_level/";
-  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
+  //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
   //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
+  string myPath = "./test/";
 
   string channels[] ={"mujets"};
 
@@ -662,7 +700,7 @@ int main(int argc, char** argv)
       // But we do need them to define PPT systematics for prompt...sometimes
       if ( (c.find("ejets") != std::string::npos) ||
            (c.find("mujets") != std::string::npos) ){
-        m_add_ppt_systematics(newfile,"weights_PPT-2018-02-08-1.root");
+        m_add_ppt_systematics(newfile,"weights_PPT_2018-03-19-1.root");
       }
 
       // If ttgamma add the kfactors
