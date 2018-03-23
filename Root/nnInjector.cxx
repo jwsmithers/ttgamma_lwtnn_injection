@@ -493,7 +493,6 @@ void m_add_branches(
 
         m_weight_PPT_hfake_3D_bin = _ppt_hfake_3D->GetBinContent(hfake_eta_bin_number,hfake_pt_bin_number,hfake_PPT_bin_number);
         m_weight_PPT_prompt_3D_bin = _ppt_prompt_3D->GetBinContent(prompt_eta_bin_number,prompt_pt_bin_number,prompt_PPT_bin_number);
-        std::cout<<"m_weight_PPT_prompt_3D_bin "<< m_weight_PPT_prompt_3D_bin << std::endl;
         
       }
       delete _ppt_hfake_1D_fit;
@@ -510,14 +509,14 @@ void m_add_branches(
           if (photon_pt >= _h_kfactor_sl->GetXaxis()->GetXmax())
             kfactor_pt_bin_number = _h_kfactor_sl->GetXaxis()->GetLast();
           m_ph_kfactor_pt->at(photon) = _h_kfactor_sl->GetBinContent(kfactor_pt_bin_number);
-          m_ph_kfactor_inclusive->at(photon)=1.7;
+          m_ph_kfactor_inclusive->at(photon)=1.80;
         }
         if (is_dilepton){
           int kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->FindBin(photon_pt);
           if (photon_pt >= _h_kfactor_dl->GetXaxis()->GetXmax())
             kfactor_pt_bin_number = _h_kfactor_dl->GetXaxis()->GetLast();
           m_ph_kfactor_pt->at(photon) = _h_kfactor_dl->GetBinContent(kfactor_pt_bin_number);
-          m_ph_kfactor_inclusive->at(photon)=1.99;
+          m_ph_kfactor_inclusive->at(photon)=1.97;
         }
       }
       
@@ -660,9 +659,8 @@ int main(int argc, char** argv)
 
   // Where we save to:
   //string myPath = "root://eosatlas//eos/atlas/user/j/jwsmith/reprocessedNtuples/v010_february18/particle_level/";
-  //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/CR1S/";
+  string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_march18/CR1S/";
   //string myPath = "root://eosatlas//eos/atlas/atlascerngroupdisk/phys-top/toproperties/ttgamma/v010_february18/QE2/";
-  string myPath = "./test/";
 
   string channels[] ={"mujets"};
 
