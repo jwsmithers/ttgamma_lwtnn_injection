@@ -137,12 +137,14 @@ void m_add_hadFake_sf( TFile *file, std::string source )
   TH1F* hfakeSF_conv_ttbarModelling_Sherpa = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_ttbarModelling_Sherpa");
   TH1F* hfakeSF_conv_ttbarModelling_ISRFSRUp = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_ttbarModelling_ISRFSRUp");
   TH1F* hfakeSF_conv_ttbarModelling_ISRFSRDown = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_ttbarModelling_ISRFSRDown");
+  TH1F* hfakeSF_conv_thetaMCstat = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_thetaMCstat");
   TH1F* hfakeSF_conv_BkgSubtraction_ttgamma = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_BkgSubtraction_ttgamma");
   TH1F* hfakeSF_conv_BkgSubtraction_rest = (TH1F*)_f_hfake_SFs->Get("hfakeSF_conv_BkgSubtraction_rest");
   TH1F* hfakeSF_unconv_Nominal = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_Nominal");
   TH1F* hfakeSF_unconv_ttbarModelling_Sherpa = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_ttbarModelling_Sherpa");
   TH1F* hfakeSF_unconv_ttbarModelling_ISRFSRUp = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_ttbarModelling_ISRFSRUp");
   TH1F* hfakeSF_unconv_ttbarModelling_ISRFSRDown = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_ttbarModelling_ISRFSRDown");
+  TH1F* hfakeSF_unconv_thetaMCstat = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_thetaMCstat");
   TH1F* hfakeSF_unconv_BkgSubtraction_ttgamma = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_BkgSubtraction_ttgamma");
   TH1F* hfakeSF_unconv_BkgSubtraction_rest = (TH1F*)_f_hfake_SFs->Get("hfakeSF_unconv_BkgSubtraction_rest");
   
@@ -152,12 +154,14 @@ void m_add_hadFake_sf( TFile *file, std::string source )
   hfakeSF_conv_ttbarModelling_Sherpa->Draw(); hfakeSF_conv_ttbarModelling_Sherpa->Write();
   hfakeSF_conv_ttbarModelling_ISRFSRUp->Draw(); hfakeSF_conv_ttbarModelling_ISRFSRUp->Write();
   hfakeSF_conv_ttbarModelling_ISRFSRDown->Draw(); hfakeSF_conv_ttbarModelling_ISRFSRDown->Write();
+  hfakeSF_conv_thetaMCstat->Draw(); hfakeSF_conv_thetaMCstat->Write();
   hfakeSF_conv_BkgSubtraction_ttgamma->Draw(); hfakeSF_conv_BkgSubtraction_ttgamma->Write();
   hfakeSF_conv_BkgSubtraction_rest->Draw(); hfakeSF_conv_BkgSubtraction_rest->Write();
   hfakeSF_unconv_Nominal->Draw(); hfakeSF_unconv_Nominal->Write();
   hfakeSF_unconv_ttbarModelling_Sherpa->Draw(); hfakeSF_unconv_ttbarModelling_Sherpa->Write();
   hfakeSF_unconv_ttbarModelling_ISRFSRUp->Draw(); hfakeSF_unconv_ttbarModelling_ISRFSRUp->Write();
   hfakeSF_unconv_ttbarModelling_ISRFSRDown->Draw(); hfakeSF_unconv_ttbarModelling_ISRFSRDown->Write();
+  hfakeSF_unconv_thetaMCstat->Draw(); hfakeSF_unconv_thetaMCstat->Write();
   hfakeSF_unconv_BkgSubtraction_ttgamma->Draw(); hfakeSF_unconv_BkgSubtraction_ttgamma->Write();
   hfakeSF_unconv_BkgSubtraction_rest->Draw(); hfakeSF_unconv_BkgSubtraction_rest->Write();
   std::cout<<"Added hadronic fake SFs..."<<std::endl;
@@ -229,6 +233,7 @@ void m_add_branches(
   newT->Branch("hadFake_sf_ttbarModelling_Sherpa","vector<float>",&m_hadFake_sf_ttbarModelling_Sherpa);
   newT->Branch("hadFake_sf_ttbarModelling_ISRFSRUp","vector<float>",&m_hadFake_sf_ttbarModelling_ISRFSRUp);
   newT->Branch("hadFake_sf_ttbarModelling_ISRFSRDn","vector<float>",&m_hadFake_sf_ttbarModelling_ISRFSRDn);
+  newT->Branch("hadFake_sf_thetaMCstat","vector<float>",&m_hadFake_sf_thetaMCstat);
   newT->Branch("hadFake_sf_BkgSubtraction_ttgamma","vector<float>",&m_hadFake_sf_BkgSubtraction_ttgamma);
   newT->Branch("hadFake_sf_BkgSubtraction_rest","vector<float>",&m_hadFake_sf_BkgSubtraction_rest);
   if(hadFake_sf_applied){
@@ -236,12 +241,14 @@ void m_add_branches(
     _hadFake_sf_conv_ttbarModelling_Sherpa = (TH1F*)file->Get("hfakeSF_conv_ttbarModelling_Sherpa");
     _hadFake_sf_conv_ttbarModelling_ISRFSRUp = (TH1F*)file->Get("hfakeSF_conv_ttbarModelling_ISRFSRUp");
     _hadFake_sf_conv_ttbarModelling_ISRFSRDown = (TH1F*)file->Get("hfakeSF_conv_ttbarModelling_ISRFSRDown");
+    _hadFake_sf_conv_thetaMCstat = (TH1F*)file->Get("hfakeSF_conv_thetaMCstat");
     _hadFake_sf_conv_BkgSubtraction_ttgamma = (TH1F*)file->Get("hfakeSF_conv_BkgSubtraction_ttgamma");
     _hadFake_sf_conv_BkgSubtraction_rest = (TH1F*)file->Get("hfakeSF_conv_BkgSubtraction_rest");
     _hadFake_sf_unconv_Nominal = (TH1F*)file->Get("hfakeSF_unconv_Nominal");
     _hadFake_sf_unconv_ttbarModelling_Sherpa = (TH1F*)file->Get("hfakeSF_unconv_ttbarModelling_Sherpa");
     _hadFake_sf_unconv_ttbarModelling_ISRFSRUp = (TH1F*)file->Get("hfakeSF_unconv_ttbarModelling_ISRFSRUp");
     _hadFake_sf_unconv_ttbarModelling_ISRFSRDown = (TH1F*)file->Get("hfakeSF_unconv_ttbarModelling_ISRFSRDown");
+    _hadFake_sf_unconv_thetaMCstat = (TH1F*)file->Get("hfakeSF_unconv_thetaMCstat");
     _hadFake_sf_unconv_BkgSubtraction_ttgamma = (TH1F*)file->Get("hfakeSF_unconv_BkgSubtraction_ttgamma");
     _hadFake_sf_unconv_BkgSubtraction_rest = (TH1F*)file->Get("hfakeSF_unconv_BkgSubtraction_rest");
   }
@@ -406,6 +413,7 @@ void m_add_branches(
     m_hadFake_sf_ttbarModelling_Sherpa->resize(ph_pt->size());
     m_hadFake_sf_ttbarModelling_ISRFSRUp->resize(ph_pt->size());
     m_hadFake_sf_ttbarModelling_ISRFSRDn->resize(ph_pt->size());
+    m_hadFake_sf_thetaMCstat->resize(ph_pt->size());
     m_hadFake_sf_BkgSubtraction_ttgamma->resize(ph_pt->size());
     m_hadFake_sf_BkgSubtraction_rest->resize(ph_pt->size());
 
@@ -554,6 +562,7 @@ void m_add_branches(
       m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = 1;
       m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = 1;
       m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = 1;
+      m_hadFake_sf_thetaMCstat->at(photon) = 1;
       m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = 1;
       m_hadFake_sf_BkgSubtraction_rest->at(photon) = 1;
 
@@ -584,6 +593,7 @@ void m_add_branches(
               m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_unconv_ttbarModelling_Sherpa->GetBinContent(bin_number);
               m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_unconv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
               m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_unconv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
+              m_hadFake_sf_thetaMCstat->at(photon) = _hadFake_sf_unconv_thetaMCstat->GetBinContent(bin_number);
               m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_unconv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
               m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_unconv_BkgSubtraction_rest->GetBinContent(bin_number);
             }
@@ -605,6 +615,7 @@ void m_add_branches(
               m_hadFake_sf_ttbarModelling_Sherpa->at(photon) = _hadFake_sf_conv_ttbarModelling_Sherpa->GetBinContent(bin_number);
               m_hadFake_sf_ttbarModelling_ISRFSRUp->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRUp->GetBinContent(bin_number);
               m_hadFake_sf_ttbarModelling_ISRFSRDn->at(photon) = _hadFake_sf_conv_ttbarModelling_ISRFSRDown->GetBinContent(bin_number);
+              m_hadFake_sf_thetaMCstat->at(photon) = _hadFake_sf_conv_thetaMCstat->GetBinContent(bin_number);
               m_hadFake_sf_BkgSubtraction_ttgamma->at(photon) = _hadFake_sf_conv_BkgSubtraction_ttgamma->GetBinContent(bin_number);
               m_hadFake_sf_BkgSubtraction_rest->at(photon) = _hadFake_sf_conv_BkgSubtraction_rest->GetBinContent(bin_number);
             }
