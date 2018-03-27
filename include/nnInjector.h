@@ -288,17 +288,23 @@ float m_dEta_lep;
 bool ppt_systematics_applied = false;
 Float_t   m_weight_PPT_hfake_1D_fit=1;
 Float_t   m_weight_PPT_prompt_1D_fit=1;
+Float_t   m_weight_PPT_hfake_iso_1D_fit=1;
 Float_t   m_weight_PPT_hfake_1D_bin=1;
+Float_t   m_weight_PPT_hfake_iso_1D_bin=1;
 Float_t   m_weight_PPT_prompt_1D_bin=1;
 Float_t   m_weight_PPT_hfake_3D_bin=1;
+Float_t   m_weight_PPT_hfake_iso_3D_bin=1;
 Float_t   m_weight_PPT_prompt_3D_bin=1;
 
 TH1F* _ppt_prompt_1D=nullptr;
 TH1F* _ppt_hfake_1D=nullptr;
+TH1F* _ppt_hfake_iso_1D=nullptr;
 TF1* _ppt_hfake_1D_fit=nullptr;
+TF1* _ppt_hfake_iso_1D_fit=nullptr;
 TF1* _ppt_prompt_1D_fit=nullptr;
 TH3F* _ppt_prompt_3D=nullptr;
 TH3F* _ppt_hfake_3D=nullptr;
+TH3F* _ppt_hfake_iso_3D=nullptr;
 
 // Kfactor
 bool kfactor_applied = false;

@@ -15,17 +15,21 @@ void m_add_ppt_systematics(
   TFile *syst = new TFile(source.c_str(),"read"); 
   if ( syst->IsOpen() ) std::cout << source << " file opened successfully" 
     << std::endl;
-  // Get the two 1D ratio plots
+  // Get the three 1D ratio plots
   TH1F* ppt_prompt_1D = (TH1F*)syst->Get("hist_ppt_prompt_1D"); //It's ee, emu and mumu
   ppt_prompt_1D->SetName("weight_PPT_prompt_histo_1D");
   TH1F* ppt_hfake_1D = (TH1F*)syst->Get("hist_ppt_fake_1D");//It's ejets and mujets
   ppt_hfake_1D->SetName("weight_PPT_hfake_histo_1D");
+  TH1F* ppt_hfake_iso_1D = (TH1F*)syst->Get("hist_ppt_fake_iso_1D");//It's ejets and mujets
+  ppt_hfake_iso_1D->SetName("weight_PPT_hfake_iso_histo_1D");
 
-  // Get the two 3D histograms
+  // Get the three 3D histograms
   TH3F* ppt_prompt_3D = (TH3F*)syst->Get("hist_ppt_prompt_3D"); //It's ee, emu and mumu
   ppt_prompt_3D->SetName("weight_PPT_prompt_histo_3D");
   TH3F* ppt_hfake_3D = (TH3F*)syst->Get("hist_ppt_fake_3D");//It's ejets and mujets
   ppt_hfake_3D->SetName("weight_PPT_hfake_histo_3D");
+  TH3F* ppt_hfake_iso_3D = (TH3F*)syst->Get("hist_ppt_fake_iso_3D");//It's ejets and mujets
+  ppt_hfake_iso_3D->SetName("weight_PPT_hfake_iso_histo_3D");
 
   // Save them
   file->cd();
@@ -39,6 +43,11 @@ void m_add_ppt_systematics(
   ppt_prompt_1D->Write();
   std::cout<<"Added 1D prompt PPT syst..."<<std::endl;
 
+  ppt_hfake_iso_1D->Draw();
+  ppt_hfake_iso_1D->Fit("pol1");
+  ppt_hfake_iso_1D->Write();
+  std::cout<<"Added 1D hfake isolation PPT syst..."<<std::endl;
+
   ppt_hfake_3D->Draw();
   ppt_hfake_3D->Write();
   std::cout<<"Added 3D hfake PPT syst..."<<std::endl;
@@ -46,6 +55,10 @@ void m_add_ppt_systematics(
   ppt_prompt_3D->Draw();
   ppt_prompt_3D->Write();
   std::cout<<"Added 3D prompt PPT syst..."<<std::endl;
+
+  ppt_hfake_iso_3D->Draw();
+  ppt_hfake_iso_3D->Write();
+  std::cout<<"Added 3D hfake isolation PPT syst..."<<std::endl;
 
   // To be used later in eventloop
   ppt_systematics_applied = true;
@@ -184,14 +197,19 @@ void m_add_branches(
   newT->Branch("weight_PPT_prompt_1D_fit",&m_weight_PPT_prompt_1D_fit);
   newT->Branch("weight_PPT_hfake_1D_bin",&m_weight_PPT_hfake_1D_bin);
   newT->Branch("weight_PPT_prompt_1D_bin",&m_weight_PPT_prompt_1D_bin);
+  newT->Branch("weight_PPT_hfake_iso_1D_bin",&m_weight_PPT_hfake_iso_1D_bin);
   newT->Branch("weight_PPT_hfake_3D_bin",&m_weight_PPT_hfake_3D_bin);
   newT->Branch("weight_PPT_prompt_3D_bin",&m_weight_PPT_prompt_3D_bin);
+  newT->Branch("weight_PPT_hfake_iso_3D_bin",&m_weight_PPT_hfake_iso_3D_bin);
+
 
   if(ppt_systematics_applied){
     _ppt_prompt_1D = (TH1F*)file->Get("weight_PPT_prompt_histo_1D");
     _ppt_hfake_1D = (TH1F*)file->Get("weight_PPT_hfake_histo_1D");
+    _ppt_hfake_iso_1D = (TH1F*)file->Get("weight_PPT_hfake_iso_histo_1D");
     _ppt_prompt_3D = (TH3F*)file->Get("weight_PPT_prompt_histo_3D");
     _ppt_hfake_3D = (TH3F*)file->Get("weight_PPT_hfake_histo_3D");
+    _ppt_hfake_iso_3D = (TH3F*)file->Get("weight_PPT_hfake_iso_histo_3D");
 
   }
 
@@ -474,6 +492,13 @@ void m_add_branches(
         int hfake_bin_number = _ppt_hfake_1D->GetXaxis()->FindBin(PPT_x_value);
         m_weight_PPT_hfake_1D_bin = _ppt_hfake_1D->GetBinContent(hfake_bin_number);
 
+        // Hfake iso derive fit weight
+        TF1 *_ppt_hfake_iso_1D_fit = (TF1*)_ppt_hfake_iso_1D->GetFunction("pol1");
+        m_weight_PPT_hfake_iso_1D_fit = _ppt_hfake_iso_1D_fit->Eval(PPT_x_value);
+        // Hfake iso derive bin weight
+        int hfake_iso_bin_number = _ppt_hfake_iso_1D->GetXaxis()->FindBin(PPT_x_value);
+        m_weight_PPT_hfake_iso_1D_bin = _ppt_hfake_iso_1D->GetBinContent(hfake_iso_bin_number);
+
         // Prompt derive fit weight
         TF1 *_ppt_prompt_1D_fit = (TF1*)_ppt_prompt_1D->GetFunction("pol1");
         m_weight_PPT_prompt_1D_fit = _ppt_prompt_1D_fit->Eval(PPT_x_value);
@@ -491,11 +516,23 @@ void m_add_branches(
         auto hfake_pt_bin_number = _ppt_hfake_3D->GetYaxis()->FindBin(ph_pt_x_value);  
         auto hfake_PPT_bin_number = _ppt_hfake_3D->GetZaxis()->FindBin(PPT_x_value);
 
+        auto hfake_iso_eta_bin_number = _ppt_hfake_iso_3D->GetXaxis()->FindBin(abs(ph_eta_x_value));
+        auto hfake_iso_pt_bin_number = _ppt_hfake_iso_3D->GetYaxis()->FindBin(ph_pt_x_value);
+        auto hfake_iso_PPT_bin_number = _ppt_hfake_iso_3D->GetZaxis()->FindBin(PPT_x_value);
+
         m_weight_PPT_hfake_3D_bin = _ppt_hfake_3D->GetBinContent(hfake_eta_bin_number,hfake_pt_bin_number,hfake_PPT_bin_number);
+        m_weight_PPT_hfake_iso_3D_bin = _ppt_hfake_iso_3D->GetBinContent(hfake_iso_eta_bin_number,hfake_iso_pt_bin_number,hfake_iso_PPT_bin_number);
         m_weight_PPT_prompt_3D_bin = _ppt_prompt_3D->GetBinContent(prompt_eta_bin_number,prompt_pt_bin_number,prompt_PPT_bin_number);
-        
+
+        if(m_weight_PPT_hfake_3D_bin == 0 || m_weight_PPT_hfake_iso_3D_bin ==0 || m_weight_PPT_prompt_3D_bin==0) {
+          std::cout<<"Weight of 0, setting it to 1. (This shouldn't occur, so check why.)"<<std::endl;
+          m_weight_PPT_hfake_3D_bin=1;
+          m_weight_PPT_hfake_iso_3D_bin=1;
+          m_weight_PPT_prompt_3D_bin=1;
+        }
       }
       delete _ppt_hfake_1D_fit;
+      delete _ppt_hfake_iso_1D_fit;
       delete _ppt_prompt_1D_fit;
       
       // Add in the Kfactor weights
@@ -709,7 +746,7 @@ int main(int argc, char** argv)
       // But we do need them to define PPT systematics for prompt...sometimes
       if ( (c.find("ejets") != std::string::npos) ||
            (c.find("mujets") != std::string::npos) ){
-        m_add_ppt_systematics(newfile,"weights_PPT_2018-03-19-1.root");
+        m_add_ppt_systematics(newfile,"weights_PPT-2018-03-27-1.root");
       }
 
       // If ttgamma add the kfactors
